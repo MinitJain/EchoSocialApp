@@ -46,7 +46,7 @@ const LeftSidebar = () => {
   };
 
   return (
-    <div className="w-[280px] min-h-screen bg-white border-r border-gray-100 flex flex-col fixed left-0 top-0 z-10 lg:relative lg:w-[25%] lg:min-w-[280px] lg:max-w-[320px]">
+    <div className="hidden md:flex w-[260px] flex-col min-h-screen border-r border-gray-200 dark:border-gray-800">
       <div className="flex-1 flex flex-col px-6 py-8">
         {/* Logo Section */}
         <div className="mb-10">

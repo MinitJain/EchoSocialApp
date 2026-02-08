@@ -8,16 +8,20 @@ import useGetTweets from "../Hooks/useGetTweets";
 const Home = () => {
   const { user, otherUsers } = useSelector((store) => store.user);
 
-  //custom hooks
   useOtherUsers(user?._id);
   useGetTweets(user?._id);
-  // console.log("Redux otherUsers:", otherUsers);
 
   return (
-    <div className="Home flex justify-between max-w-[1400px] w-[100%] mx-auto">
-      <LeftSidebar />
-      <Outlet />
-      <RightSideBar otherUsers={otherUsers} />
+    <div className="min-h-screen bg-white dark:bg-black">
+      <div className="max-w-[1280px] mx-auto flex">
+        <LeftSidebar />
+
+        <main className="flex-1 max-w-[680px] border-x border-gray-200 dark:border-gray-800">
+          <Outlet />
+        </main>
+
+        <RightSideBar otherUsers={otherUsers} />
+      </div>
     </div>
   );
 };

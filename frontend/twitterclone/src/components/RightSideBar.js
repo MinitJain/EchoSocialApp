@@ -23,7 +23,7 @@ const RightSideBar = ({ otherUsers }) => {
       const res = await axios.post(
         `${USER_API_END_POINT}/${endpoint}/${userToFollowId}`,
         { id: user?._id },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       if (res.data.success) {
@@ -44,7 +44,7 @@ const RightSideBar = ({ otherUsers }) => {
       const filtered = otherUsers.filter(
         (otherUser) =>
           otherUser.name.toLowerCase().includes(query.toLowerCase()) ||
-          otherUser.username.toLowerCase().includes(query.toLowerCase())
+          otherUser.username.toLowerCase().includes(query.toLowerCase()),
       );
       setSearchResults(filtered);
     } else {
@@ -53,7 +53,7 @@ const RightSideBar = ({ otherUsers }) => {
   };
 
   return (
-    <div className="w-[30%] min-w-[320px] max-w-[400px] min-h-screen px-6 py-8 hidden lg:block">
+    <div className="hidden xl:flex w-[320px] flex-col min-h-screen px-6 py-8 border-l border-gray-200 dark:border-gray-800">
       {/* Search Box */}
       <div className="relative mb-6">
         <CiSearch
