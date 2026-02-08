@@ -9,6 +9,7 @@ import { getIsActive, getRefresh } from "../redux/tweetSlice";
 const CreatePost = () => {
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+
   const { user } = useSelector((store) => store.user);
   const { isActive } = useSelector((store) => store.tweet);
   const dispatch = useDispatch();
@@ -18,113 +19,138 @@ const CreatePost = () => {
       toast.error("Tweet cannot be empty!");
       return;
     }
+
     try {
       setLoading(true);
+
       const res = await axios.post(
         `${TWEET_API_END_POINT}/create`,
         { description, id: user?._id },
-        { withCredentials: true }
+        { withCredentials: true },
       );
-      dispatch(getRefresh());
+
       if (res.data.success) {
+        dispatch(getRefresh());
         toast.success(res.data.message);
-        setDescription(""); // clear input after posting
+        setDescription("");
       }
     } catch (error) {
-      console.log(error);
       toast.error(error.response?.data?.message || "Something went wrong!");
     } finally {
       setLoading(false);
     }
   };
-  const followingHandler = () => {
-    dispatch(getIsActive(true));
-  };
 
-  const forYouHandler = () => {
-    dispatch(getIsActive(false));
-  };
+  const followingHandler = () => dispatch(getIsActive(true));
+  const forYouHandler = () => dispatch(getIsActive(false));
 
   return (
-    <div className="w-full bg-white border-l border-r border-gray-100 ">
-      {/* Tab Navigation */}
-      <div className="sticky top-0 bg-white/80 backdrop-blur-md border-b border-gray-100 z-10">
+    <>
+      {/* Tabs */}
+      <div
+        className="
+        sticky top-0 z-10
+        bg-white/80 dark:bg-zinc-900/80
+        backdrop-blur-md
+        border-b border-zinc-200 dark:border-zinc-800
+      "
+      >
         <div className="flex">
           <button
             onClick={forYouHandler}
-            className={`flex-1 py-4 px-6 text-center transition-all duration-200 relative group ${
-              !isActive
-                ? "text-gray-900 font-semibold"
-                : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
-            }`}
+            className={`
+              flex-1 py-4 text-center relative transition-all
+              ${
+                !isActive
+                  ? "text-zinc-900 dark:text-zinc-100 font-semibold"
+                  : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              }
+            `}
           >
-            <span className="text-[15px] tracking-[-0.01em]">For You</span>
+            For You
             {!isActive && (
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-900 rounded-full"></div>
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-zinc-900 dark:bg-zinc-500 rounded-full" />
             )}
           </button>
 
           <button
             onClick={followingHandler}
-            className={`flex-1 py-4 px-6 text-center transition-all duration-200 relative group ${
-              isActive
-                ? "text-gray-900 font-semibold"
-                : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
-            }`}
+            className={`
+              flex-1 py-4 text-center relative transition-all
+              ${
+                isActive
+                  ? "text-zinc-900 dark:text-zinc-100 font-semibold"
+                  : "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+              }
+            `}
           >
-            <span className="text-[15px] tracking-[-0.01em]">Following</span>
+            Following
             {isActive && (
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-900 rounded-full"></div>
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-zinc-900 dark:bg-zinc-500 rounded-full" />
             )}
           </button>
         </div>
       </div>
 
-      {/* Create Post Section */}
-      <div className="p-6">
+      {/* Compose Card */}
+      <div
+        className="mx-2 my-4 p-5 rounded-2xl
+  bg-white dark:bg-zinc-900
+  border border-zinc-200 dark:border-zinc-800
+  shadow-sm hover:shadow-lg dark:hover:shadow-black/30
+  transition-all duration-200
+      "
+      >
         <div className="flex gap-4">
           {/* Avatar */}
-          <div className="flex-shrink-0">
-            {user?.profileImageUrl ? (
-              <img
-                src={user.profileImageUrl}
-                alt={user.name}
-                className="w-12 h-12 rounded-full object-cover ring-2 ring-white shadow-sm"
-              />
-            ) : (
-              <Avatar
-                name={user?.name || "Guest"}
-                size="48"
-                round={true}
-                className="ring-2 ring-white shadow-sm"
-              />
-            )}
-          </div>
+          {user?.profileImageUrl ? (
+            <img
+              src={user.profileImageUrl}
+              alt={user.name}
+              className="w-11 h-11 rounded-full object-cover ring-2 ring-white dark:ring-zinc-800"
+            />
+          ) : (
+            <Avatar
+              name={user?.name || "User"}
+              size="44"
+              round
+              className="ring-2 ring-white dark:ring-zinc-800"
+            />
+          )}
 
-          {/* Input Area */}
-          <div className="flex-1 min-w-0">
+          <div className="flex-1">
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full min-h-[120px] p-4 text-[18px] placeholder-gray-500 border border-gray-200 rounded-2xl focus:border-gray-300 focus:ring-0 focus:outline-none resize-none transition-all duration-200 leading-relaxed"
               placeholder="What's happening?"
-              rows={4}
+              rows={3}
+              className="
+                w-full resize-none
+                bg-zinc-100 dark:bg-zinc-800
+                text-zinc-900 dark:text-zinc-100
+                placeholder-zinc-500 dark:placeholder-zinc-400
+                p-4 rounded-2xl
+                border border-transparent
+                focus:border-zinc-300 dark:focus:border-zinc-700
+                focus:outline-none
+                transition-all
+                text-[16px] leading-relaxed
+              "
             />
 
-            {/* Bottom Actions */}
-            <div className="flex items-center justify-end mt-4">
-              {/* <button className="p-2.5 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-all duration-200 active:scale-95">
-                <CiImageOn size={22} />
-              </button> */}
-
+            <div className="flex justify-end mt-4">
               <button
                 onClick={submitHandler}
                 disabled={loading || !description.trim()}
-                className={`px-6 py-2.5  font-medium text-[15px] rounded-full transition-all duration-200 active:scale-[0.98] tracking-[-0.01em] ${
-                  loading || !description.trim()
-                    ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                    : "bg-gray-900 text-white hover:bg-gray-800 shadow-sm hover:shadow-md"
-                }`}
+                className={`
+                  px-5 py-2.5 rounded-full text-sm font-medium
+                  transition-all duration-200
+                  ${
+                    loading || !description.trim()
+                      ? "bg-zinc-200 text-zinc-400 dark:bg-zinc-700 dark:text-zinc-500 cursor-not-allowed"
+                      : "bg-zinc-900 text-white hover:bg-black dark:bg-zinc-100 dark:text-black dark:hover:bg-white"
+                  }
+                `}
               >
                 {loading ? "Posting..." : "Post"}
               </button>
@@ -132,10 +158,7 @@ const CreatePost = () => {
           </div>
         </div>
       </div>
-
-      {/* Divider */}
-      <div className="h-2 bg-gray-50 border-t border-b border-gray-100"></div>
-    </div>
+    </>
   );
 };
 

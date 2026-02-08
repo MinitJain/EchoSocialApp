@@ -1,142 +1,183 @@
 import {
   RiHome5Line,
-  RiHashtag,
-  RiNotification3Line,
   RiUser3Line,
   RiBookmarkLine,
   RiLogoutBoxRLine,
+  RiSunLine,
+  RiMoonLine,
 } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { USER_API_END_POINT } from "../utils/constant";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 import { getMyProfile, getOtherUsers, setUser } from "../redux/userSlice";
+
+const SidebarItem = ({ to, icon: Icon, label }) => {
+  return (
+    <NavLink
+      to={to}
+      end
+      className={({ isActive }) => `
+        flex items-center gap-4 px-4 py-3 rounded-xl
+        transition-all duration-200
+        ${
+          isActive
+            ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-black"
+            : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+        }
+      `}
+    >
+      <Icon size={20} />
+      <span className="text-[15px] font-medium tracking-tight">{label}</span>
+    </NavLink>
+  );
+};
 
 const LeftSidebar = () => {
   const { user } = useSelector((store) => store.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const [isDark, setIsDark] = useState(false);
+
+  // Load saved theme on mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+
+    if (savedTheme === "dark") {
+      document.documentElement.classList.add("dark");
+      setIsDark(true);
+    } else {
+      document.documentElement.classList.remove("dark");
+      setIsDark(false);
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    if (isDark) {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    } else {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    }
+
+    setIsDark(!isDark);
+  };
+
   const logoutHandler = async () => {
     try {
-      // First clear the local storage
       localStorage.clear();
-
-      // Then clear Redux state
       dispatch(setUser(null));
       dispatch(getOtherUsers(null));
       dispatch(getMyProfile(null));
 
-      // Then make the logout request
-      const res = await axios.get(`${USER_API_END_POINT}/logout`, {
+      await axios.get(`${USER_API_END_POINT}/logout`, {
         withCredentials: true,
       });
 
-      // Show success message
-      toast.success(res.data.message || "Logged out successfully");
-
-      // Finally navigate (use replace to prevent going back)
+      toast.success("Logged out");
       navigate("/login", { replace: true });
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Logout failed");
-      console.log(error);
+    } catch {
+      toast.error("Logout failed");
     }
   };
 
   return (
-    <div className="w-[280px] min-h-screen bg-white border-r border-gray-100 flex flex-col fixed left-0 top-0 z-10 lg:relative lg:w-[25%] lg:min-w-[280px] lg:max-w-[320px]">
-      <div className="flex-1 flex flex-col px-6 py-8">
-        {/* Logo Section */}
-        <div className="mb-10">
-          <img
-            width="60px"
-            height="60px"
-            src="/ZoomedLogo.png"
-            alt="Logo"
-            className="object-contain transition-transform duration-200 hover:scale-105"
+    <aside
+      className="
+      hidden md:flex
+      w-[260px]
+      flex-col
+      min-h-screen
+      
+      bg-white dark:bg-zinc-950
+      px-6 pt-8
+    "
+    >
+      {/* Logo */}
+      {/* Logo */}
+      <div className="mb-14">
+        <img
+          src="/ZoomedLogo.png"
+          alt="Logo"
+          className="
+      w-14 h-14
+      object-contain
+      transition-transform duration-200
+      hover:scale-105
+    "
+        />
+      </div>
+
+      <nav className="flex flex-col gap-2">
+        <SidebarItem to="/" icon={RiHome5Line} label="Home" />
+
+        {user && (
+          <SidebarItem
+            to={`/profile/${user._id}`}
+            icon={RiUser3Line}
+            label="Profile"
           />
+        )}
+
+        <SidebarItem to="/bookmarks" icon={RiBookmarkLine} label="Bookmarks" />
+
+        {/* Theme Toggle */}
+        <div
+          className="
+          flex items-center justify-between
+          px-4 py-3 rounded-xl
+          hover:bg-zinc-100 dark:hover:bg-zinc-800
+          transition-all duration-200
+        "
+        >
+          <div className="flex items-center gap-4">
+            {isDark ? (
+              <RiMoonLine size={20} className="text-zinc-500" />
+            ) : (
+              <RiSunLine size={20} className="text-zinc-500" />
+            )}
+            <span className="text-[15px] font-medium text-zinc-700 dark:text-zinc-300">
+              Dark Mode
+            </span>
+          </div>
+
+          <button
+            onClick={toggleTheme}
+            className={`
+            relative w-11 h-6 rounded-full
+            transition-all duration-300
+            ${isDark ? "bg-zinc-700" : "bg-zinc-300"}
+          `}
+          >
+            <span
+              className={`
+              absolute top-1 left-1 w-4 h-4 rounded-full bg-white
+              transition-all duration-300
+              ${isDark ? "translate-x-5" : "translate-x-0"}
+            `}
+            />
+          </button>
         </div>
 
-        {/* Navigation Section */}
-        <nav className="flex-1 space-y-2">
-          <Link
-            to="/"
-            className="group flex items-center px-4 py-3.5 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-all duration-200 ease-in-out active:scale-[0.98] active:bg-gray-100"
-          >
-            <RiHome5Line
-              size={22}
-              className="transition-transform duration-200 group-hover:scale-110"
-            />
-            <span className="ml-4 font-medium text-[15px] tracking-[-0.01em]">
-              Home
-            </span>
-          </Link>
-
-          <div className="group flex items-center px-4 py-3.5 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-all duration-200 ease-in-out active:scale-[0.98] active:bg-gray-100 cursor-pointer">
-            <RiHashtag
-              size={22}
-              className="transition-transform duration-200 group-hover:scale-110"
-            />
-            <span className="ml-4 font-medium text-[15px] tracking-[-0.01em]">
-              Explore
-            </span>
-          </div>
-
-          <div className="group flex items-center px-4 py-3.5 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-all duration-200 ease-in-out active:scale-[0.98] active:bg-gray-100 cursor-pointer">
-            <RiNotification3Line
-              size={22}
-              className="transition-transform duration-200 group-hover:scale-110"
-            />
-            <span className="ml-4 font-medium text-[15px] tracking-[-0.01em]">
-              Notifications
-            </span>
-          </div>
-
-          {user && (
-            <Link
-              to={`/profile/${user._id}`}
-              className="group flex items-center px-4 py-3.5 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-all duration-200 ease-in-out active:scale-[0.98] active:bg-gray-100"
-            >
-              <RiUser3Line
-                size={22}
-                className="transition-transform duration-200 group-hover:scale-110"
-              />
-              <span className="ml-4 font-medium text-[15px] tracking-[-0.01em]">
-                Profile
-              </span>
-            </Link>
-          )}
-
-          <Link
-            to="/bookmarks"
-            className="group flex items-center px-4 py-3.5 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-all duration-200 ease-in-out active:scale-[0.98] active:bg-gray-100"
-          >
-            <RiBookmarkLine
-              size={22}
-              className="transition-transform duration-200 group-hover:scale-110"
-            />
-            <span className="ml-4 font-medium text-[15px] tracking-[-0.01em]">
-              Bookmarks
-            </span>
-          </Link>
-
-          <div
-            onClick={logoutHandler}
-            className="group flex items-center px-4 py-3.5 rounded-xl text-red-500 hover:text-red-600 hover:bg-red-50 transition-all duration-200 ease-in-out active:scale-[0.98] active:bg-red-100 cursor-pointer"
-          >
-            <RiLogoutBoxRLine
-              size={22}
-              className="transition-transform duration-200 group-hover:scale-110"
-            />
-            <span className="ml-4 font-medium text-[15px] tracking-[-0.01em]">
-              Logout
-            </span>
-          </div>
-        </nav>
-      </div>
-    </div>
+        {/* Logout */}
+        <button
+          onClick={logoutHandler}
+          className="
+          flex items-center gap-4 px-4 py-3 rounded-xl
+          text-red-500
+          hover:bg-red-500/10
+          transition-all duration-200
+        "
+        >
+          <RiLogoutBoxRLine size={20} />
+          <span className="text-[15px] font-medium tracking-tight">Logout</span>
+        </button>
+      </nav>
+    </aside>
   );
 };
 

@@ -4,129 +4,187 @@ import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import useGetProfile from "../Hooks/useGetProfile";
+import useGetTweets from "../Hooks/useGetTweets";
 import API from "../api/axios";
 import { followingUpdate } from "../redux/userSlice";
 import { getRefresh } from "../redux/tweetSlice";
 import EditProfile from "./EditProfile";
+import Tweet from "./Tweet";
 
 const Profile = () => {
-  const { id } = useParams(); // URL param (if any)
-  const { user, profile } = useSelector((store) => store.user);
+  const { id } = useParams();
   const dispatch = useDispatch();
+
+  const { user, profile } = useSelector((store) => store.user);
+  const { tweets } = useSelector((store) => store.tweet);
+
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+
   useGetProfile(id);
+  useGetTweets(user?._id);
 
-  const followAndUnfollowHandler = async () => {
-    try {
-      if (user.following.includes(id)) {
-        // Unfollow
-        await API.post(`/api/v1/user/unfollow/${id}`, {
-          id: user?._id,
-        });
-        dispatch(followingUpdate(id));
-        dispatch(getRefresh());
-        // toast.success(res.data.message || "User Unfollowed!");
-      } else {
-        // Follow
-        const res = await API.post(`/api/v1/user/follow/${id}`, {
-          id: user?._id,
-        });
-
-        // Only update the state if the follow request was successful
-        if (res.data.success) {
-          dispatch(followingUpdate(id));
-          // toast.success(res.data.message || "User followed!");
-        } else {
-          // If the backend indicates failure, show the error message
-          // toast.error(res.data.message || "Failed to follow user");
-        }
-      }
-    } catch (error) {
-      // Don't update the state if there's an error
-      // toast.error(error.response?.data?.message || "Something went wrong!");
-      console.log(error);
-    }
-  };
-
-  // Optional loading state
   if (!profile) {
     return (
-      <div className="w-[50%] border-l border-r border-gray-200 flex items-center justify-center">
-        <p className="text-gray-500">Loading profile...</p>
+      <div className="w-full flex items-center justify-center py-20">
+        <p className="text-zinc-500 dark:text-zinc-400">Loading profile...</p>
       </div>
     );
   }
 
-  return (
-    <div className="w-[50%] ">
-      <div>
-        <div className="flex items-center my-4">
-          <Link
-            to="/"
-            className="cursor-pointer p-2 rounded-full hover:bg-gray-100"
-          >
-            <IoMdArrowBack size={24} />
-          </Link>
-          <div>
-            <h1 className="font-bold text-lg">{profile?.name}</h1>
-            {/* <p className="text-gray-500 text-md">10 posts</p> */}
-          </div>
-        </div>
+  const isOwnProfile = profile?._id === user?._id;
+  const isFollowing = user?.following?.includes(profile?._id);
 
-        <div className="relative">
+  const followAndUnfollowHandler = async () => {
+    try {
+      const endpoint = isFollowing ? "unfollow" : "follow";
+
+      await API.post(`/api/v1/user/${endpoint}/${profile._id}`, {
+        id: user?._id,
+      });
+
+      dispatch(followingUpdate(profile._id));
+      dispatch(getRefresh());
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const userTweets = tweets?.filter(
+    (tweet) => tweet.userId?._id === profile._id,
+  );
+
+  return (
+    <div className="w-full">
+      {/* Header */}
+      <div className="flex items-center gap-4 px-6 py-4">
+        <Link
+          to="/"
+          className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
+        >
+          <IoMdArrowBack size={22} />
+        </Link>
+
+        <h1 className="font-semibold text-lg text-zinc-900 dark:text-zinc-100">
+          {profile.name}
+        </h1>
+      </div>
+
+      {/* Banner */}
+      <div className="relative">
+        <div className="w-full h-44 sm:h-52 overflow-hidden">
           <img
             src={
               profile?.bannerUrl ||
               "https://placehold.co/600x200?text=Profile+Banner"
             }
-            alt="Profile Banner"
-            className="w-full h-48 object-cover"
+            alt="Banner"
+            className="w-full h-full object-cover"
           />
-          <div className="absolute top-36 left-4">
-            {profile?.profileImageUrl ? (
-              <img
-                src={profile.profileImageUrl}
-                alt="Profile"
-                className="w-24 h-24 rounded-full object-cover border-4 border-white"
-              />
-            ) : (
-              <Avatar name={profile?.name} size="100" round={true} />
-            )}
-          </div>
+        </div>
 
-          {/* Only show Edit Profile if it's your own profile */}
-
-          {profile?._id === user?._id ? (
-            <div className="absolute top-52 right-2">
-              <button
-                onClick={() => setIsEditProfileOpen(true)}
-                className="px-4 py-1.5 font-semibold border-2 border-gray-400 rounded-full hover:bg-zinc-200"
-              >
-                Edit Profile
-              </button>
-            </div>
+        {/* Avatar */}
+        <div className="absolute -bottom-12 left-6">
+          {profile?.profileImageUrl ? (
+            <img
+              src={profile.profileImageUrl}
+              alt="Profile"
+              className="
+                w-24 h-24 sm:w-28 sm:h-28
+                rounded-full object-cover
+                ring-2 ring-white dark:ring-zinc-950
+                shadow-xl
+              "
+            />
           ) : (
-            <div className="absolute top-52 right-2">
-              <button
-                onClick={followAndUnfollowHandler}
-                className="px-4 py-1.5 bg-black font-semibold rounded-full text-white"
-              >
-                {user.following.includes(id) ? "Unfollow" : "Follow"}
-              </button>
-            </div>
+            <Avatar
+              name={profile?.name}
+              size="112"
+              round
+              className="ring-2 ring-white dark:ring-zinc-950 shadow-xl"
+            />
           )}
-
-          <div className="mt-16 px-4">
-            <h1 className="text-xl font-bold">{profile?.name}</h1>
-            <p className="text-gray-500">@{profile?.username}</p>
-            <div className="mt-4">
-              <p className="text-gray-800 text-sm">{profile?.bio || ""}</p>
-            </div>
-          </div>
         </div>
       </div>
 
-      {/* Edit Profile Modal */}
+      {/* Action Button */}
+      <div className="flex justify-end mt-16 px-6">
+        {isOwnProfile ? (
+          <button
+            onClick={() => setIsEditProfileOpen(true)}
+            className="
+              px-5 py-2 rounded-full
+              border border-zinc-300 dark:border-zinc-700
+              text-zinc-900 dark:text-zinc-100
+              hover:bg-zinc-100 dark:hover:bg-zinc-800
+              transition
+            "
+          >
+            Edit Profile
+          </button>
+        ) : (
+          <button
+            onClick={followAndUnfollowHandler}
+            className={`
+              px-5 py-2 rounded-full font-medium transition
+              ${
+                isFollowing
+                  ? "bg-zinc-200 text-zinc-800 hover:bg-zinc-300 dark:bg-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-600"
+                  : "bg-zinc-900 text-white hover:bg-black dark:bg-zinc-100 dark:text-black dark:hover:bg-white"
+              }
+            `}
+          >
+            {isFollowing ? "Following" : "Follow"}
+          </button>
+        )}
+      </div>
+
+      {/* Profile Info */}
+      <div className="px-6 mt-4 pb-6">
+        <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
+          {profile.name}
+        </h2>
+
+        <p className="text-zinc-500 dark:text-zinc-400 text-sm">
+          @{profile.username}
+        </p>
+
+        {profile.bio && profile.bio.trim() !== "" && (
+          <p className="mt-4 text-sm text-zinc-800 dark:text-zinc-300 leading-relaxed">
+            {profile.bio}
+          </p>
+        )}
+
+        <div className="flex gap-6 mt-4 text-sm">
+          <span className="font-medium text-zinc-900 dark:text-zinc-100">
+            {profile.following?.length || 0}{" "}
+            <span className="text-zinc-500 dark:text-zinc-400 font-normal">
+              Following
+            </span>
+          </span>
+
+          <span className="font-medium text-zinc-900 dark:text-zinc-100">
+            {profile.followers?.length || 0}{" "}
+            <span className="text-zinc-500 dark:text-zinc-400 font-normal">
+              Followers
+            </span>
+          </span>
+        </div>
+      </div>
+
+      {/* Divider */}
+      <div className="border-t border-zinc-200 dark:border-zinc-800" />
+
+      {/* Tweets Section */}
+      <div className="mt-2">
+        {userTweets && userTweets.length > 0 ? (
+          userTweets.map((tweet) => <Tweet key={tweet._id} tweet={tweet} />)
+        ) : (
+          <div className="py-12 text-center text-zinc-500 dark:text-zinc-400 text-sm">
+            No tweets yet.
+          </div>
+        )}
+      </div>
+
       <EditProfile
         isOpen={isEditProfileOpen}
         onClose={() => setIsEditProfileOpen(false)}

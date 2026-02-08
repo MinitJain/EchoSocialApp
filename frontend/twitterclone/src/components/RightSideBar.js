@@ -23,7 +23,7 @@ const RightSideBar = ({ otherUsers }) => {
       const res = await axios.post(
         `${USER_API_END_POINT}/${endpoint}/${userToFollowId}`,
         { id: user?._id },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       if (res.data.success) {
@@ -32,7 +32,6 @@ const RightSideBar = ({ otherUsers }) => {
       }
     } catch (error) {
       toast.error(error.response?.data?.message || "Something went wrong!");
-      console.error("Follow/Unfollow error:", error);
     }
   };
 
@@ -44,7 +43,7 @@ const RightSideBar = ({ otherUsers }) => {
       const filtered = otherUsers.filter(
         (otherUser) =>
           otherUser.name.toLowerCase().includes(query.toLowerCase()) ||
-          otherUser.username.toLowerCase().includes(query.toLowerCase())
+          otherUser.username.toLowerCase().includes(query.toLowerCase()),
       );
       setSearchResults(filtered);
     } else {
@@ -53,11 +52,11 @@ const RightSideBar = ({ otherUsers }) => {
   };
 
   return (
-    <div className="w-[30%] min-w-[320px] max-w-[400px] min-h-screen px-6 py-8 hidden lg:block">
-      {/* Search Box */}
+    <div className="hidden lg:block w-[320px] pl-8 pt-6 sticky top-6 self-start">
+      {/* SEARCH */}
       <div className="relative mb-6">
         <CiSearch
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"
           size={20}
         />
         <input
@@ -65,53 +64,83 @@ const RightSideBar = ({ otherUsers }) => {
           value={searchQuery}
           onChange={handleSearch}
           placeholder="Search users..."
-          className="w-full py-3.5 pl-12 pr-4 bg-gray-50 text-gray-900 placeholder-gray-500 rounded-2xl border border-transparent focus:border-gray-200 focus:bg-white focus:ring-0 focus:outline-none transition-all duration-200 text-[15px] font-medium"
+          className="
+            w-full py-3 pl-12 pr-4
+            rounded-2xl
+            bg-zinc-100 dark:bg-zinc-800
+            text-zinc-900 dark:text-zinc-100
+            placeholder-zinc-500 dark:placeholder-zinc-400
+            border border-transparent
+            focus:border-zinc-300 dark:focus:border-zinc-700
+            focus:outline-none
+            transition-all
+          "
         />
       </div>
 
-      {/* Search Results */}
+      {/* SEARCH RESULTS */}
       {searchQuery && searchResults.length > 0 && (
-        <div className="mb-6 p-6 bg-white rounded-2xl border border-gray-100 shadow-sm">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4 tracking-[-0.01em]">
+        <div
+          className="
+          mb-6 p-5 rounded-2xl
+          bg-white dark:bg-zinc-900
+          border border-zinc-200 dark:border-zinc-800
+          shadow-md dark:shadow-black/30
+        "
+        >
+          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-4">
             Search Results
           </h2>
+
           <div className="space-y-3">
             {searchResults.map((otherUser) => (
               <div
                 key={otherUser._id}
-                className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-xl transition-all duration-200 group gap-3"
+                className="
+                  flex items-center justify-between
+                  px-3 py-2.5 rounded-xl
+                  hover:bg-zinc-100 dark:hover:bg-zinc-800
+                  transition-all duration-200
+                "
               >
-                <div className="flex items-center min-w-0 flex-1">
-                  <div className="flex-shrink-0">
-                    {otherUser?.profileImageUrl ? (
-                      <img
-                        src={otherUser.profileImageUrl}
-                        alt={otherUser.name}
-                        className="w-12 h-12 rounded-full object-cover ring-2 ring-white shadow-sm"
-                      />
-                    ) : (
-                      <Avatar
-                        name={otherUser?.name || "Guest"}
-                        size="48"
-                        round={true}
-                        className="ring-2 ring-white shadow-sm"
-                      />
-                    )}
-                  </div>
-                  <div className="ml-3 min-w-0 flex-1">
-                    <h3 className="font-semibold text-gray-900 text-[15px] tracking-[-0.01em] truncate">
+                <Link
+                  to={`/profile/${otherUser._id}`}
+                  className="flex items-center gap-3 flex-1 min-w-0"
+                >
+                  {otherUser?.profileImageUrl ? (
+                    <img
+                      src={otherUser.profileImageUrl}
+                      alt={otherUser.name}
+                      className="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-zinc-800"
+                    />
+                  ) : (
+                    <Avatar
+                      name={otherUser?.name || "User"}
+                      size="40"
+                      round
+                      className="ring-2 ring-white dark:ring-zinc-800"
+                    />
+                  )}
+
+                  <div className="min-w-0">
+                    <h3 className="font-medium text-sm text-zinc-900 dark:text-zinc-100 truncate">
                       {otherUser.name}
                     </h3>
-                    <p className="text-sm text-gray-500 truncate">
+                    <p className="text-sm text-zinc-500 dark:text-zinc-400 truncate">
                       @{otherUser.username}
                     </p>
                   </div>
-                </div>
-                <Link
-                  to={`/profile/${otherUser._id}`}
-                  className="flex-shrink-0"
-                >
-                  <button className="bg-gray-900 hover:bg-gray-800 text-white px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200 active:scale-[0.98] tracking-[-0.01em]">
+                </Link>
+
+                <Link to={`/profile/${otherUser._id}`}>
+                  <button
+                    className="
+                    px-3 py-1.5 text-sm font-medium rounded-lg
+                    bg-zinc-900 text-white hover:bg-black
+                    dark:bg-zinc-100 dark:text-black dark:hover:bg-white
+                    transition-all duration-200
+                  "
+                  >
                     View
                   </button>
                 </Link>
@@ -121,72 +150,88 @@ const RightSideBar = ({ otherUsers }) => {
         </div>
       )}
 
-      {/* Suggested for You */}
-      <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-sm">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4 tracking-[-0.01em]">
+      {/* SUGGESTED */}
+      <div
+        className="
+        p-5 rounded-2xl
+        bg-white dark:bg-zinc-900
+        border border-zinc-200 dark:border-zinc-800
+        shadow-md dark:shadow-black/30
+      "
+      >
+        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-4">
           Suggested for You
         </h2>
+
         {otherUsers && otherUsers.length > 0 ? (
           <div className="space-y-3">
-            {otherUsers.map((otherUser) => (
-              <div
-                key={otherUser._id}
-                className="flex items-center justify-between p-3 hover:bg-gray-50 rounded-xl transition-all duration-200 group gap-3"
-              >
-                <Link
-                  to={`/profile/${otherUser._id}`}
-                  className="flex items-center min-w-0 flex-1"
+            {otherUsers.map((otherUser) => {
+              const isFollowing = user.following.includes(otherUser._id);
+
+              return (
+                <div
+                  key={otherUser._id}
+                  className="
+                    flex items-center justify-between
+                    px-1 py-3.5 rounded-xl
+                    hover:bg-zinc-100 dark:hover:bg-zinc-800
+                    transition-all duration-200
+                  "
                 >
-                  <div className="flex-shrink-0">
+                  <Link
+                    to={`/profile/${otherUser._id}`}
+                    className="flex items-center gap-3 flex-1 min-w-0"
+                  >
                     {otherUser?.profileImageUrl ? (
                       <img
                         src={otherUser.profileImageUrl}
                         alt={otherUser.name}
-                        className="w-12 h-12 rounded-full object-cover ring-2 ring-white shadow-sm"
+                        className="w-10 h-10 rounded-full object-cover ring-2 ring-white dark:ring-zinc-800"
                       />
                     ) : (
                       <Avatar
-                        name={otherUser?.name || "Guest"}
-                        size="48"
-                        round={true}
-                        className="ring-2 ring-white shadow-sm"
+                        name={otherUser?.name || "User"}
+                        size="40"
+                        round
+                        className="ring-2 ring-white dark:ring-zinc-800"
                       />
                     )}
-                  </div>
-                  <div className="ml-3 min-w-0 flex-1">
-                    <h3 className="font-semibold text-gray-900 text-[15px] tracking-[-0.01em] group-hover:text-gray-700 transition-colors truncate">
-                      {otherUser.name}
-                    </h3>
-                    <p className="text-sm text-gray-500 truncate">
-                      @{otherUser.username}
-                    </p>
-                  </div>
-                </Link>
 
-                <div className="flex-shrink-0">
+                    <div className="min-w-0">
+                      <h3 className="font-medium text-sm text-zinc-900 dark:text-zinc-100 truncate">
+                        {otherUser.name}
+                      </h3>
+                      <p className="text-sm text-zinc-500 dark:text-zinc-400 truncate">
+                        @{otherUser.username}
+                      </p>
+                    </div>
+                  </Link>
+
                   <button
                     onClick={(e) => {
                       e.preventDefault();
                       handleFollowToggle(otherUser._id);
                     }}
-                    className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-all duration-200 active:scale-[0.98] tracking-[-0.01em] ${
-                      user.following.includes(otherUser._id)
-                        ? "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                        : "bg-gray-900 text-white hover:bg-gray-800"
-                    }`}
+                    className={`
+                      px-3 py-1.5 text-sm font-medium rounded-lg
+                      transition-all duration-200
+                      ${
+                        isFollowing
+                          ? "bg-zinc-200 text-zinc-800 hover:bg-zinc-300 dark:bg-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-600"
+                          : "bg-zinc-900 text-white hover:bg-black dark:bg-zinc-100 dark:text-black dark:hover:bg-white"
+                      }
+                    `}
                   >
-                    {user.following.includes(otherUser._id)
-                      ? "Following"
-                      : "Follow"}
+                    {isFollowing ? "Following" : "Follow"}
                   </button>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         ) : (
-          <div className="text-center py-8">
-            <p className="text-gray-500 text-[15px]">No users found</p>
-          </div>
+          <p className="text-sm text-zinc-500 dark:text-zinc-400 text-center py-6">
+            No users found
+          </p>
         )}
       </div>
     </div>
