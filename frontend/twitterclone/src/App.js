@@ -6,7 +6,6 @@ import API from "./api/axios";
 import Body from "./components/Body";
 import Login from "./components/Login";
 import { Toaster } from "react-hot-toast";
-import CopilotHelper from "./components/CopilotHelper";
 import { Analytics } from "@vercel/analytics/react";
 
 function App() {
@@ -49,7 +48,6 @@ function App() {
       </Routes>
 
       <Toaster />
-      <CopilotHelper />
       <Analytics />
     </>
   );

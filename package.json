@@ -15,5 +15,9 @@
   "workspaces": [
     "backend",
     "frontend/twitterclone"
-  ]
+  ],
+  "dependencies": {
+    "@copilotkit/react-core": "^1.51.3",
+    "@copilotkit/react-ui": "^1.51.3"
+  }
 }

@@ -10,17 +10,27 @@ const useGetProfile = (id) => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get(`${USER_API_END_POINT}/profile/${id}`, {
-          withCredentials: true,
-        });
-        console.log("Fetched profile from API:", res.data.user);
+        if (!id) return;
+
+        let res;
+
+        if (id === "me") {
+          res = await axios.get(`${USER_API_END_POINT}/me`, {
+            withCredentials: true,
+          });
+        } else {
+          res = await axios.get(`${USER_API_END_POINT}/profile/${id}`, {
+            withCredentials: true,
+          });
+        }
+
         dispatch(getMyProfile(res.data.user));
       } catch (error) {
-        console.log("Failed to fetch profile, Error: ", error);
+        console.log("Failed to fetch profile:", error);
       }
     };
 
-    if (id) fetchProfile();
+    fetchProfile();
   }, [id, dispatch]);
 };
 

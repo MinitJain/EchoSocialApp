@@ -13,9 +13,8 @@ root.render(
     <CopilotKit
       publicApiKey="ck_pub_00828bb5867d63cbfb2bbc6f1352e642"
       chatApiEndpoint="/api/chat"
-      apiConfiguration={{
-        debug: true,
-      }}
+      apiConfiguration={{ debug: false }}
+      showDevConsole={false}
     >
       <Provider store={store}>
         <BrowserRouter>
