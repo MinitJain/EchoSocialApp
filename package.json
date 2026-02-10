@@ -1,21 +1,18 @@
 {
-  "name": "echo-twitter-clone",
+  "name": "echo",
   "version": "1.0.0",
-  "description": "ECHO - A Twitter Clone built with MERN stack",
   "private": true,
+  "description": "Echo — a full-stack AI-enabled microblogging platform built with the MERN stack, featuring secure authentication, modern UI/UX, dark mode, and an integrated AI writing assistant."
+,
   "scripts": {
-    "build": "cd frontend/twitterclone && npm run build",
-    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm start\"",
-    "install-all": "cd backend && npm install && cd ../frontend/twitterclone && npm install",
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
+    "build": "cd frontend && npm run build",
+    "install-all": "cd backend && npm install && cd ../frontend && npm install",
     "start": "cd backend && npm start"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
   },
-  "workspaces": [
-    "backend",
-    "frontend/twitterclone"
-  ],
   "dependencies": {
     "@copilotkit/react-core": "^1.51.3",
     "@copilotkit/react-ui": "^1.51.3"
