@@ -1,4 +1,4 @@
-# Echo 🚀
+## Echo 🚀
 
 **Echo** is a production-oriented, AI-ready **microblogging platform** built with the **MERN stack**.  
 It is designed to demonstrate **scalable full-stack architecture**, **secure authentication**, **clean API design**, and **modern frontend infrastructure** using **Vite** and **Tailwind CSS**.
@@ -10,11 +10,11 @@ It is designed to demonstrate **scalable full-stack architecture**, **secure aut
 
 ## ✨ Key Highlights
 
-- Secure, cookie-based **JWT authentication**
-- Production-ready **CORS configuration**
-- Clear **backend separation of concerns**
-- Modern frontend architecture (**Vite + React 19**)
-- **AI integration-ready** structure (Copilot-style assistant)
+- **Secure, cookie-based JWT authentication**
+- **Production-ready CORS configuration**
+- **Clear backend separation of concerns**
+- **Modern frontend architecture (Vite + React 19)**
+- **AI integration-ready structure (Copilot-style assistant)**
 
 ---
 
@@ -49,122 +49,120 @@ echo/
 │
 ├── package.json          # Root orchestration scripts
 └── README.md
+```
 
+---
 
+## 🛠 Tech Stack
 
-🛠 Tech Stack
-Backend
+### Backend
 
-Node.js
+- **Node.js**
+- **Express.js**
+- **MongoDB + Mongoose**
+- **JWT** (HTTP-only cookie authentication)
+- **bcrypt** (password hashing)
+- **Helmet** (security headers)
+- **CORS** (strict origin control)
+- **Rate limiting** (authentication endpoints)
 
-Express.js
+### Frontend
 
-MongoDB + Mongoose
+- **React 19**
+- **Vite**
+- **Redux Toolkit**
+- **React Router**
+- **Axios**
+- **Tailwind CSS v3**
+- **CopilotKit** (AI integration layer)
 
-JWT (HTTP-only cookie authentication)
+---
 
-bcrypt (password hashing)
+## 🚀 Deployment
 
-Helmet (security headers)
+- **Backend**: Render  
+- **Frontend**: Vercel
 
-CORS (strict origin control)
+---
 
-Rate limiting (authentication endpoints)
+## 🔐 Core Capabilities
 
-Frontend
+### Authentication
 
-React 19
+- **JWT stored in secure HTTP-only cookies**
+- **Password hashing with bcrypt**
+- **`/me` endpoint for session hydration**
+- **Protected routes via middleware**
+- **Proper cross-origin credential handling**
 
-Vite
+### Social Features
 
-Redux Toolkit
+- **Post creation & deletion**
+- **Like / unlike posts**
+- **Bookmarking**
+- **Follow / unfollow users**
+- **User profiles**
+- **Feed aggregation**
 
-React Router
+### 🤖 AI-Ready Architecture
 
-Axios
+Echo integrates **CopilotKit** and is structured to support:
 
-Tailwind CSS v3
+- **Assisted post composition**
+- **Intelligent UX enhancements**
+- **Context-aware AI features**
+- **Modular AI service integration**
 
-CopilotKit (AI integration layer)
+---
 
-🚀 Deployment
+## ⚙️ Environment Configuration
 
-Backend: Render
+### Backend (`backend/.env`)
 
-Frontend: Vercel
-
-🔐 Core Capabilities
-Authentication
-
-JWT stored in secure HTTP-only cookies
-
-Password hashing with bcrypt
-
-/me endpoint for session hydration
-
-Protected routes via middleware
-
-Proper cross-origin credential handling
-
-Social Features
-
-Post creation & deletion
-
-Like / unlike posts
-
-Bookmarking
-
-Follow / unfollow users
-
-User profiles
-
-Feed aggregation
-
-🤖 AI-Ready Architecture
-
-Echo integrates CopilotKit and is structured to support:
-
-Assisted post composition
-
-Intelligent UX enhancements
-
-Context-aware AI features
-
-Modular AI service integration
-
-⚙️ Environment Configuration
-Backend (backend/.env)
+```env
 PORT=8080
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_secure_secret
 FRONTEND_URL=https://your-vercel-domain.vercel.app
 
-Frontend (frontend/.env)
+```
+
+### Frontend (`frontend/.env`)
+
+```env
 VITE_API_URL=https://your-backend-domain.onrender.com
+```
 
+> ⚠️ **Important**:  
+> Frontend environment variables must use the `VITE_` prefix.  
+> Vite does not expose other environment variables to the client.
 
-⚠️ Important:
-Frontend environment variables must use the VITE_ prefix.
-Vite does not expose other environment variables to the client.
+---
 
-🧪 Local Development
-Install Dependencies
+## 🧪 Local Development
+
+### Install Dependencies
 
 From the project root:
 
+```bash
 npm run install-all
-
+```
 
 Or manually:
 
+```bash
 cd backend && npm install
 cd ../frontend && npm install
+```
 
-Run Development Servers
+### Run Development Servers
 
 From the root directory:
 
+```bash
 npm run dev
+```
 
 
 This runs:
@@ -183,132 +181,133 @@ Expected response:
   "status": "ok"
 }
 
-📦 Production Build
+---
+
+## 📦 Production Build
 
 To build the frontend:
 
+```bash
 cd frontend
 npm run build
-
+```
 
 Vite outputs static assets to:
 
-frontend/dist/
+- `frontend/dist/`
 
-☁️ Deployment Guide
-Frontend (Vercel)
+---
 
-Configuration
+## ☁️ Deployment Guide
 
-Framework: Vite
+### Frontend (Vercel)
 
-Root Directory: frontend
+- **Framework**: Vite  
+- **Root Directory**: `frontend`  
+- **Build Command**: `npm run build`  
+- **Output Directory**: `dist`
 
-Build Command: npm run build
+**Environment Variables**
 
-Output Directory: dist
+- `VITE_API_URL=https://your-render-backend.onrender.com`
 
-Environment Variables
+### Backend (Render)
 
-VITE_API_URL=https://your-render-backend.onrender.com
+- Deploy from `/backend`
+- Set environment variables in the Render dashboard
+- Ensure `FRONTEND_URL` matches your Vercel domain
+- Enable credentials in CORS configuration
 
-Backend (Render)
+---
 
-Deploy from /backend
+## 🔒 Security Considerations
 
-Set environment variables in the dashboard
+- **JWT stored in HTTP-only cookies**
+- **CORS configured with strict origin whitelist**
+- **Credentials enabled for cross-origin requests**
+- **Passwords hashed with bcrypt**
+- **Helmet used for secure HTTP headers**
+- **Environment variables for all secrets**
+- **No credentials committed to the repository**
 
-Ensure FRONTEND_URL matches your Vercel domain
+---
 
-Enable credentials in CORS configuration
+## 🌐 CORS Model
 
-🔒 Security Considerations
+The backend allows:
 
-JWT stored in HTTP-only cookies
-
-CORS configured with strict origin whitelist
-
-Credentials enabled for cross-origin requests
-
-Passwords hashed with bcrypt
-
-Helmet used for secure HTTP headers
-
-Environment variables for all secrets
-
-No credentials committed to the repository
-
-🌐 CORS Model
-
-Backend allows:
-
-Local development origins (localhost:5173, etc.)
-
-Production frontend domain via FRONTEND_URL
+- **Local development origins** (`localhost:5173`, etc.)
+- **Production frontend domain** via `FRONTEND_URL`
 
 Cookies are transmitted using Axios:
 
+```js
 axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
 });
+```
 
+The server must respond with:
 
-Server must respond with:
+- `credentials: true`
 
-credentials: true
+---
 
-📜 Build & Script Reference
-Root Scripts
+## 📜 Build & Script Reference
+
+### Root `package.json` Scripts
+
+```json
 {
-  "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
+  "dev": "concurrently \\"cd backend && npm run dev\\" \\"cd frontend && npm run dev\\"",
   "build": "cd frontend && npm run build",
   "install-all": "cd backend && npm install && cd ../frontend && npm install",
   "start": "cd backend && npm start"
 }
+```
 
-✅ Production Readiness Notes
+---
 
-Vite replaces CRA for modern ESM-based builds
+## ✅ Production Readiness Notes
 
-Tailwind v3 ensures stable PostCSS compatibility
+- **Vite** replaces CRA for modern ESM-based builds
+- **Tailwind v3** ensures stable PostCSS compatibility
+- **PostCSS config** uses CommonJS (`.cjs`) for Vite compatibility
+- **Lockfiles** regenerated post-migration
+- No **CRA artifacts** remain
+- No `REACT_APP_*` variables remain
 
-PostCSS config uses CommonJS (.cjs) for Vite compatibility
+---
 
-Lockfiles regenerated post-migration
+## ⚠️ Known Limitations
 
-No CRA artifacts remain
+- No real-time WebSocket notifications
+- No media upload support
+- No horizontal scaling (single backend instance)
+- No automated test suite included
 
-No REACT_APP_* variables remain
+---
 
-⚠️ Known Limitations
+## 🔮 Future Improvements
 
-No real-time WebSocket notifications
+- Real-time notifications (WebSockets)
+- Media uploads (S3 or Cloudinary)
+- Infinite scrolling with cursor-based pagination
+- Horizontal scaling with Redis-backed session control
+- Observability integration (OpenTelemetry)
+- AI-based moderation pipeline
 
-No media upload support
+---
 
-No horizontal scaling (single backend instance)
-
-No automated test suite included
-
-🔮 Future Improvements
-
-Real-time notifications (WebSockets)
-
-Media uploads (S3 or Cloudinary)
-
-Infinite scrolling with cursor-based pagination
-
-Horizontal scaling with Redis-backed session control
-
-Observability integration (OpenTelemetry)
-
-AI-based moderation pipeline
-
-📄 License
+## 📄 License
 
 MIT
 
-👤 Maintainer
+---
 
-Minit Jain
+## 👤 Maintainer
+
+**Minit Jain**
+
+If you're a recruiter, mentor, or developer reviewing this project — feel free to explore, fork, or reach out!
