@@ -125,23 +125,27 @@ const EditProfile = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 dark:bg-black/60 p-4">
+      <div className="w-full max-h-[90vh] max-w-2xl overflow-y-auto rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 shadow-xl">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200">
+        <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 px-4 py-3">
           <div className="flex items-center gap-4">
             <button
               onClick={onClose}
-              className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+              className="rounded-full p-2 text-zinc-500 hover:bg-zinc-200 dark:hover:bg-zinc-900/60 hover:text-zinc-900 dark:hover:text-zinc-100 transition"
             >
               <IoMdClose size={20} />
             </button>
-            <h2 className="text-xl font-bold">Edit Profile</h2>
+
+            <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-50">
+              Edit Profile
+            </h2>
           </div>
+
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="px-4 py-2 bg-black text-white rounded-full font-semibold hover:bg-gray-800 disabled:opacity-50 transition-colors"
+            className="rounded-full bg-blue-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-blue-400 disabled:opacity-60"
           >
             {loading ? "Saving..." : "Save"}
           </button>
@@ -149,177 +153,102 @@ const EditProfile = ({ isOpen, onClose }) => {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6">
-          {/* Image Preview Section */}
-          <div className="mb-8">
+          {/* Banner + Avatar Wrapper */}
+          <div className="relative mb-16">
             {/* Banner Preview */}
-            <div className="relative h-40 bg-gray-100 rounded-lg overflow-hidden mb-4">
+            <div className="h-40 overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-100 dark:bg-zinc-900 shadow-sm dark:shadow-none">
               {formData.bannerUrl ? (
                 <img
                   src={formData.bannerUrl}
                   alt="Banner preview"
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full bg-gradient-to-r from-gray-200 to-gray-300 flex items-center justify-center">
-                  <span className="text-gray-500 text-sm">Banner Image</span>
+                <div className="flex h-full items-center justify-center">
+                  <span className="text-xs text-zinc-500">Banner Image</span>
                 </div>
               )}
             </div>
 
-            {/* Profile Picture Preview */}
-            <div className="flex items-end gap-4 -mt-16 ml-6">
-              <div className="relative w-28 h-28 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100">
+            {/* Avatar Preview */}
+            <div className="absolute -bottom-12 left-6 z-10">
+              <div
+                className="
+      h-24 w-24 rounded-full overflow-hidden
+      border-4 border-white dark:border-zinc-950
+      bg-zinc-200 dark:bg-zinc-900
+      shadow-md dark:shadow-black/40
+      ring-1 ring-black/5 dark:ring-white/10
+    "
+              >
                 {formData.profileImageUrl ? (
                   <img
                     src={formData.profileImageUrl}
                     alt="Profile preview"
-                    className="w-full h-full object-cover"
+                    className="h-full w-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                    <span className="text-gray-500 text-xs">Profile Photo</span>
+                  <div className="flex h-full items-center justify-center">
+                    <span className="text-xs text-zinc-500">Profile</span>
                   </div>
                 )}
               </div>
             </div>
           </div>
 
-          {/* Image URL Inputs Section */}
-          <div className="space-y-6 mb-8">
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h3 className="text-sm font-semibold text-gray-700 mb-4">
-                Profile Images
-              </h3>
+          {/* Inputs */}
+          <div className="space-y-5">
+            {/* Banner URL */}
+            <input
+              type="url"
+              value={formData.bannerUrl}
+              onChange={(e) =>
+                handleImageUrlChange("bannerUrl", e.target.value)
+              }
+              placeholder="Banner image URL"
+              className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+            />
 
-              {/* Banner URL */}
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-600 mb-2">
-                  Banner Image URL
-                </label>
-                <input
-                  type="url"
-                  value={formData.bannerUrl}
-                  onChange={(e) =>
-                    handleImageUrlChange("bannerUrl", e.target.value)
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-colors"
-                  placeholder="https://example.com/banner.jpg"
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  💡 Use landscape images for best results
-                </p>
-              </div>
-
-              {/* Profile Picture URL */}
-              <div>
-                <label className="block text-sm font-medium text-gray-600 mb-2">
-                  Profile Picture URL
-                </label>
-                <input
-                  type="url"
-                  value={formData.profileImageUrl}
-                  onChange={(e) =>
-                    handleImageUrlChange("profileImageUrl", e.target.value)
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-colors"
-                  placeholder="https://example.com/photo.jpg"
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  💡 Use square images (1:1 ratio) for best results
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Profile Information Section */}
-          <div className="space-y-6">
-            <h3 className="text-sm font-semibold text-gray-700">
-              Profile Information
-            </h3>
+            {/* Profile URL */}
+            <input
+              type="url"
+              value={formData.profileImageUrl}
+              onChange={(e) =>
+                handleImageUrlChange("profileImageUrl", e.target.value)
+              }
+              placeholder="Profile image URL"
+              className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+            />
 
             {/* Name */}
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-2">
-                Name *
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                className={`w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                  errors.name ? "border-red-500" : "border-gray-300"
-                }`}
-                placeholder="Enter your full name"
-              />
-              {errors.name && (
-                <p className="text-red-500 text-sm mt-1">{errors.name}</p>
-              )}
-            </div>
+            <input
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              placeholder="Name"
+              className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+            />
 
             {/* Username */}
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-2">
-                Username *
-              </label>
-              <input
-                type="text"
-                name="username"
-                value={formData.username}
-                onChange={handleInputChange}
-                className={`w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                  errors.username ? "border-red-500" : "border-gray-300"
-                }`}
-                placeholder="Enter your username"
-              />
-              {errors.username && (
-                <p className="text-red-500 text-sm mt-1">{errors.username}</p>
-              )}
-            </div>
+            <input
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleInputChange}
+              placeholder="Username"
+              className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+            />
 
             {/* Bio */}
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-2">
-                Bio
-              </label>
-              <textarea
-                name="bio"
-                value={formData.bio}
-                onChange={handleInputChange}
-                rows={4}
-                maxLength={160}
-                className={`w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none transition-colors ${
-                  errors.bio ? "border-red-500" : "border-gray-300"
-                }`}
-                placeholder="Tell us about yourself..."
-              />
-              <div className="flex justify-between items-center mt-2">
-                {errors.bio && (
-                  <p className="text-red-500 text-sm">{errors.bio}</p>
-                )}
-                <p className="text-gray-500 text-sm ml-auto">
-                  {formData.bio.length}/160
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Help Section */}
-          <div className="mt-8 p-4 bg-blue-50 rounded-lg">
-            <h4 className="text-sm font-medium text-blue-800 mb-2">
-              💡 Image Tips
-            </h4>
-            <ul className="text-xs text-blue-700 space-y-1">
-              <li>
-                • Use <strong>Unsplash</strong> or <strong>Pexels</strong> for
-                free high-quality images
-              </li>
-              <li>
-                • Upload to <strong>Imgur</strong> and copy the direct image
-                link
-              </li>
-              <li>• Make sure the image URL ends with .jpg, .png, or .gif</li>
-            </ul>
+            <textarea
+              name="bio"
+              value={formData.bio}
+              onChange={handleInputChange}
+              rows={4}
+              placeholder="Tell us about yourself..."
+              className="w-full resize-none rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2.5 text-sm text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+            />
           </div>
         </form>
       </div>

@@ -69,16 +69,14 @@ const Tweet = ({ tweet }) => {
     <>
       <div
         className="
-        mx-2 my-3
-        p-5
-        rounded-2xl
-        bg-white dark:bg-zinc-900
-        border border-zinc-200 dark:border-zinc-800
-        shadow-sm hover:shadow-md
-        transition-all duration-200
+        my-3
+        rounded-xl border border-zinc-200 bg-white/95
+        shadow-sm transition-all duration-150 ease-out
+        hover:-translate-y-0.5 hover:shadow-md
+        dark:border-zinc-800 dark:bg-zinc-900/95
         "
       >
-        <div className="flex gap-4">
+        <div className="flex gap-3 px-4 py-4 sm:px-5 sm:py-4">
           {/* Avatar */}
           <Link to={`/profile/${tweetUser?._id}`}>
             <div className="flex-shrink-0">
@@ -103,33 +101,32 @@ const Tweet = ({ tweet }) => {
             {/* Header */}
             <div className="flex items-center gap-2 mb-2">
               <Link to={`/profile/${tweetUser?._id}`}>
-                <h2 className="font-semibold text-zinc-900 dark:text-zinc-100 text-[15px]">
+                <h2 className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">
                   {tweetUser?.name}
                 </h2>
-                <span className="text-zinc-500 dark:text-zinc-400 text-[14px]">
+                <span className="text-xs text-zinc-500 dark:text-zinc-400">
                   @{tweetUser?.username}
                 </span>
               </Link>
             </div>
 
             {/* Content */}
-            <div className="mb-4">
-              <p className="text-zinc-900 dark:text-zinc-200 text-[15px] leading-relaxed whitespace-pre-wrap">
+            <div className="mb-3">
+              <p className="whitespace-pre-wrap text-sm leading-relaxed text-zinc-900 dark:text-zinc-100">
                 {tweet?.description}
               </p>
             </div>
 
             {/* Actions */}
-            <div className="flex items-center gap-6 pt-2">
+            <div className="flex items-center gap-5 pt-1.5">
               {/* Like */}
               <button
                 onClick={() => likeOrDislikeHandler(tweet?._id)}
                 className="
-                flex items-center gap-1.5
-                px-3 py-1.5
-                rounded-full
+                flex items-center gap-1.5 rounded-full px-3 py-1.5
+                transition-all duration-150 ease-out
                 hover:bg-red-50 dark:hover:bg-red-500/10
-                transition-all duration-200 active:scale-95
+                active:scale-95
                 "
               >
                 {likes.includes(user?._id) ? (
@@ -138,7 +135,7 @@ const Tweet = ({ tweet }) => {
                   <RiHeart3Line size={18} className="text-zinc-500" />
                 )}
                 <span
-                  className={`text-sm ${
+                  className={`text-xs ${
                     likes.includes(user?._id) ? "text-red-500" : "text-zinc-500"
                   }`}
                 >
@@ -150,11 +147,10 @@ const Tweet = ({ tweet }) => {
               <button
                 onClick={() => bookmarkHandler(tweet?._id)}
                 className="
-                flex items-center gap-1.5
-                px-3 py-1.5
-                rounded-full
-                hover:bg-blue-50 dark:hover:bg-blue-500/10
-                transition-all duration-200 active:scale-95
+                flex items-center gap-1.5 rounded-full px-3 py-1.5
+                transition-all duration-150 ease-out
+                hover:bg-indigo-50 dark:hover:bg-indigo-500/10
+                active:scale-95
                 "
               >
                 <RiBookmarkLine
@@ -166,9 +162,9 @@ const Tweet = ({ tweet }) => {
                   }
                 />
                 <span
-                  className={`text-sm ${
+                  className={`text-xs ${
                     user?.bookmarks?.includes(tweet?._id)
-                      ? "text-blue-500"
+                      ? "text-indigo-600"
                       : "text-zinc-500"
                   }`}
                 >
@@ -184,11 +180,10 @@ const Tweet = ({ tweet }) => {
                     setShowDeleteConfirm(true);
                   }}
                   className="
-                  flex items-center gap-1.5
-                  px-3 py-1.5
-                  rounded-full
+                  flex items-center gap-1.5 rounded-full px-3 py-1.5
+                  transition-all duration-150 ease-out
                   hover:bg-red-50 dark:hover:bg-red-500/10
-                  transition-all duration-200 active:scale-95
+                  active:scale-95
                   "
                 >
                   <MdDeleteOutline size={18} className="text-zinc-500" />
@@ -202,25 +197,25 @@ const Tweet = ({ tweet }) => {
 
       {/* Modal */}
       {showDeleteConfirm && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-50 p-4">
-          <div className="bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-md border border-zinc-200 dark:border-zinc-800">
-            <div className="p-6">
-              <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-xl border border-zinc-200 bg-white/95 shadow-lg dark:border-zinc-800 dark:bg-zinc-900/95">
+            <div className="px-5 py-4 sm:px-6 sm:py-5">
+              <h2 className="mb-1 text-base font-semibold text-zinc-900 dark:text-zinc-50">
                 Delete Tweet?
               </h2>
-              <p className="text-zinc-600 dark:text-zinc-400 text-[15px] mb-6">
+              <p className="mb-5 text-sm text-zinc-600 dark:text-zinc-400">
                 This action cannot be undone.
               </p>
 
-              <div className="flex gap-3 justify-end">
+              <div className="flex justify-end gap-3">
                 <button
                   onClick={() => setShowDeleteConfirm(false)}
                   className="
-                  px-5 py-2 rounded-full
-                  border border-zinc-300 dark:border-zinc-700
-                  text-zinc-700 dark:text-zinc-300
-                  hover:bg-zinc-100 dark:hover:bg-zinc-800
-                  transition-all duration-200
+                  rounded-full border border-zinc-300 px-4 py-1.5 text-xs font-medium
+                  text-zinc-700 transition-colors duration-150 ease-out
+                  hover:bg-zinc-100
+                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-0
+                  dark:border-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-800
                   "
                 >
                   Cancel
@@ -232,10 +227,10 @@ const Tweet = ({ tweet }) => {
                     setShowDeleteConfirm(false);
                   }}
                   className="
-                  px-5 py-2 rounded-full
-                  bg-red-500 text-white
+                  rounded-full bg-red-500 px-4 py-1.5 text-xs font-medium text-white
+                  transition-colors duration-150 ease-out
                   hover:bg-red-600
-                  transition-all duration-200
+                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-0
                   "
                 >
                   Delete

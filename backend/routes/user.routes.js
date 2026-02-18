@@ -10,7 +10,7 @@ import {
   Register,
   unfollow,
   updateProfile,
-} from "../controllers/userController.js";
+} from "../controllers/user.controller.js";
 import isAuthenticated from "../config/auth.js";
 
 const router = express.Router();
@@ -21,7 +21,7 @@ router.put("/bookmark/:id", isAuthenticated, bookmark);
 router.get("/me", isAuthenticated, getMe);
 router.route("/profile/:id").get(isAuthenticated, GetUserProfile);
 router.put("/update/:id", isAuthenticated, updateProfile);
-router.get("/otherusers/:id", isAuthenticated, getOtherUserProfile);
+router.get("/otherusers", isAuthenticated, getOtherUserProfile);
 router.post("/follow/:id", isAuthenticated, follow);
 router.post("/unfollow/:id", isAuthenticated, unfollow);
 

@@ -6,7 +6,7 @@ import {
   getFollowingTweets,
   getTweetById,
   likeorDislikeTweet,
-} from "../controllers/tweetController.js";
+} from "../controllers/tweet.controller.js";
 import isAuthenticated from "../config/auth.js";
 
 const router = express.Router();

@@ -2,8 +2,7 @@
   "name": "echo",
   "version": "1.0.0",
   "private": true,
-  "description": "Echo — a full-stack AI-enabled microblogging platform built with the MERN stack, featuring secure authentication, modern UI/UX, dark mode, and an integrated AI writing assistant."
-,
+  "description": "Echo — a full-stack AI-enabled microblogging platform built with the MERN stack, featuring secure authentication, modern UI/UX, dark mode, and an integrated AI writing assistant.",
   "scripts": {
     "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
     "build": "cd frontend && npm run build",
@@ -12,9 +11,5 @@
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
-  },
-  "dependencies": {
-    "@copilotkit/react-core": "^1.51.3",
-    "@copilotkit/react-ui": "^1.51.3"
   }
 }

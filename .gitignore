@@ -11,6 +11,7 @@ dist/
 # Environment variables
 .env
 .env.production
+.env.development
 backend/.env
 backend/.env.*
 frontend/twitterclone/.env

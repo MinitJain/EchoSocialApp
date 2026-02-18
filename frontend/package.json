@@ -10,8 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@copilotkit/react-core": "^1.51.3",
-    "@copilotkit/react-ui": "^1.51.3",
     "@reduxjs/toolkit": "^2.11.2",
     "axios": "^1.13.5",
     "react": "^19.2.0",

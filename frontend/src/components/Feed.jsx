@@ -6,7 +6,7 @@ const Feed = () => {
   const { tweets } = useSelector((store) => store.tweet);
 
   return (
-    <div className="w-full space-y-2 pt-4">
+    <div className="w-full space-y-4 pt-2">
       <CreatePost />
       {Array.isArray(tweets) && tweets.length > 0 ? (
         tweets.map((tweet) => <Tweet key={tweet._id} tweet={tweet} />)

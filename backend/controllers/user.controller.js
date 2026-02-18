@@ -1,5 +1,5 @@
-import { User } from "../models/userSchema.js";
-import { Tweet } from "../models/tweetSchema.js";
+import { User } from "../models/user.model.js";
+import { Tweet } from "../models/tweet.model.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -242,22 +242,25 @@ export const getMe = async (req, res) => {
 
 export const getOtherUserProfile = async (req, res) => {
   try {
-    const { id } = req.params;
-    const OtherUser = await User.find({ _id: { $ne: id } }).select("-password");
-    if (!OtherUser) {
-      return res.status(404).json({
-        message: "Cannot find other at the moment.",
-        success: false,
-      });
-    }
+    const loggedInUserId = req.user;
+
+    const otherUsers = await User.find({
+      _id: { $ne: loggedInUserId },
+      followers: { $nin: [loggedInUserId] },
+    })
+      .select("-password")
+      .sort({ createdAt: -1 })
+      .limit(10);
+
     return res.status(200).json({
-      OtherUser,
+      success: true,
+      otherUsers,
     });
   } catch (error) {
-    console.log("getOtherUserProfile Error:", error);
+    console.log("Suggestion Error:", error);
     return res.status(500).json({
-      message: "Error fetching other user profile.",
       success: false,
+      message: "Error fetching suggestions",
     });
   }
 };

@@ -3,8 +3,8 @@ import { IoMdArrowBack } from "react-icons/io";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import useGetProfile from "../Hooks/useGetProfile";
-import useGetTweets from "../Hooks/useGetTweets";
+import useGetProfile from "../hooks/useGetProfile";
+import useGetTweets from "../hooks/useGetTweets";
 import API from "../api/axios";
 import { followingUpdate } from "../redux/userSlice";
 import { getRefresh } from "../redux/tweetSlice";
@@ -21,12 +21,14 @@ const Profile = () => {
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
 
   useGetProfile(id);
-  useGetTweets(user?._id);
+  useGetTweets(id);
 
   if (!profile) {
     return (
-      <div className="w-full flex items-center justify-center py-20">
-        <p className="text-zinc-500 dark:text-zinc-400">Loading profile...</p>
+      <div className="flex w-full items-center justify-center py-20">
+        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          Loading profile...
+        </p>
       </div>
     );
   }
@@ -56,80 +58,68 @@ const Profile = () => {
   return (
     <div className="w-full">
       {/* Header */}
-      <div className="flex items-center gap-4 px-6 py-4">
+      <div className="flex items-center gap-3 px-4 py-3">
         <Link
           to="/"
-          className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-800 transition"
+          className="rounded-full p-2 text-zinc-500 transition-colors hover:bg-zinc-200 dark:hover:bg-zinc-900/60 hover:text-zinc-900 dark:hover:text-zinc-100"
         >
           <IoMdArrowBack size={22} />
         </Link>
 
-        <h1 className="font-semibold text-lg text-zinc-900 dark:text-zinc-100">
+        <h1 className="text-base font-semibold text-zinc-900 dark:text-zinc-50">
           {profile.name}
         </h1>
       </div>
 
       {/* Banner */}
       <div className="relative">
-        <div className="w-full h-44 sm:h-52 overflow-hidden">
+        <div className="h-40 w-full overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-800 sm:h-48">
           <img
             src={
               profile?.bannerUrl ||
               "https://placehold.co/600x200?text=Profile+Banner"
             }
             alt="Banner"
-            className="w-full h-full object-cover"
+            className="h-full w-full object-cover"
           />
         </div>
 
         {/* Avatar */}
-        <div className="absolute -bottom-12 left-6">
+        <div className="absolute -bottom-10 left-6">
           {profile?.profileImageUrl ? (
             <img
               src={profile.profileImageUrl}
               alt="Profile"
-              className="
-                w-24 h-24 sm:w-28 sm:h-28
-                rounded-full object-cover
-                ring-2 ring-white dark:ring-zinc-950
-                shadow-xl
-              "
+              className="h-20 w-20 sm:h-24 sm:w-24 rounded-full object-cover ring-2 ring-white dark:ring-zinc-950 shadow-md"
             />
           ) : (
             <Avatar
               name={profile?.name}
-              size="112"
+              size="96"
               round
-              className="ring-2 ring-white dark:ring-zinc-950 shadow-xl"
+              className="ring-2 ring-white dark:ring-zinc-950 shadow-md"
             />
           )}
         </div>
       </div>
 
       {/* Action Button */}
-      <div className="flex justify-end mt-16 px-6">
+      <div className="mt-16 flex justify-end px-4">
         {isOwnProfile ? (
           <button
             onClick={() => setIsEditProfileOpen(true)}
-            className="
-              px-5 py-2 rounded-full
-              border border-zinc-300 dark:border-zinc-700
-              text-zinc-900 dark:text-zinc-100
-              hover:bg-zinc-100 dark:hover:bg-zinc-800
-              transition
-            "
+            className="rounded-full border border-zinc-300 dark:border-zinc-700 px-4 py-1.5 text-sm font-medium text-zinc-900 dark:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition"
           >
             Edit Profile
           </button>
         ) : (
           <button
             onClick={followAndUnfollowHandler}
-            className={`
-              px-5 py-2 rounded-full font-medium transition
+            className={`rounded-full px-4 py-1.5 text-sm font-medium transition
               ${
                 isFollowing
-                  ? "bg-zinc-200 text-zinc-800 hover:bg-zinc-300 dark:bg-zinc-700 dark:text-zinc-200 dark:hover:bg-zinc-600"
-                  : "bg-zinc-900 text-white hover:bg-black dark:bg-zinc-100 dark:text-black dark:hover:bg-white"
+                  ? "bg-zinc-200 text-zinc-900 hover:bg-zinc-300 dark:bg-zinc-800 dark:text-zinc-100 dark:hover:bg-zinc-700"
+                  : "bg-blue-500 text-white hover:bg-blue-400"
               }
             `}
           >
@@ -139,32 +129,32 @@ const Profile = () => {
       </div>
 
       {/* Profile Info */}
-      <div className="px-6 mt-4 pb-6">
-        <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
+      <div className="mt-4 px-4 pb-6">
+        <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
           {profile.name}
         </h2>
 
-        <p className="text-zinc-500 dark:text-zinc-400 text-sm">
+        <p className="text-sm text-zinc-600 dark:text-zinc-400">
           @{profile.username}
         </p>
 
         {profile.bio && profile.bio.trim() !== "" && (
-          <p className="mt-4 text-sm text-zinc-800 dark:text-zinc-300 leading-relaxed">
+          <p className="mt-3 text-sm leading-relaxed text-zinc-700 dark:text-zinc-200">
             {profile.bio}
           </p>
         )}
 
-        <div className="flex gap-6 mt-4 text-sm">
+        <div className="mt-3 flex gap-6 text-sm">
           <span className="font-medium text-zinc-900 dark:text-zinc-100">
             {profile.following?.length || 0}{" "}
-            <span className="text-zinc-500 dark:text-zinc-400 font-normal">
+            <span className="font-normal text-zinc-600 dark:text-zinc-500">
               Following
             </span>
           </span>
 
           <span className="font-medium text-zinc-900 dark:text-zinc-100">
             {profile.followers?.length || 0}{" "}
-            <span className="text-zinc-500 dark:text-zinc-400 font-normal">
+            <span className="font-normal text-zinc-600 dark:text-zinc-500">
               Followers
             </span>
           </span>
@@ -179,7 +169,7 @@ const Profile = () => {
         {userTweets && userTweets.length > 0 ? (
           userTweets.map((tweet) => <Tweet key={tweet._id} tweet={tweet} />)
         ) : (
-          <div className="py-12 text-center text-zinc-500 dark:text-zinc-400 text-sm">
+          <div className="py-12 text-center text-sm text-zinc-500 dark:text-zinc-400">
             No tweets yet.
           </div>
         )}

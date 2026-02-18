@@ -1,35 +1,34 @@
+import { Outlet } from "react-router-dom";
+import { useSelector } from "react-redux";
 import LeftSidebar from "./LeftSidebar";
 import RightSideBar from "./RightSideBar";
-import { Outlet } from "react-router-dom";
-import useOtherUsers from "../Hooks/useOtherUsers";
-import { useSelector } from "react-redux";
-import useGetTweets from "../Hooks/useGetTweets";
 import MobileNav from "./MobileNav";
-import { useState } from "react";
-import CopilotHelper from "./CopilotHelper";
+import useOtherUsers from "../hooks/useOtherUsers";
+import useGetTweets from "../hooks/useGetTweets";
+import ScrollFade from "./ui/scrollFade";
 
 const Home = () => {
   const { user, otherUsers } = useSelector((store) => store.user);
-  const [aiOpen, setAiOpen] = useState(false);
 
   useOtherUsers(user?._id);
   useGetTweets(user?._id);
 
   return (
     <>
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 transition-colors pb-20">
-        <div className="max-w-[1200px] mx-auto flex px-4">
-          <LeftSidebar onAIClick={() => setAiOpen(true)} />
-          <main className="flex-1 max-w-[680px] w-full mx-auto px-4 sm:px-6 lg:px-0">
+      <div className="h-screen overflow-hidden bg-zinc-50 dark:bg-zinc-950">
+        <div className="mx-auto flex h-full max-w-6xl gap-6 px-4 lg:px-8">
+          <LeftSidebar />
+
+          <main className="flex-1 w-full max-w-2xl overflow-y-auto pr-2 ">
             <Outlet />
+            <ScrollFade />
           </main>
+
           <RightSideBar otherUsers={otherUsers} />
         </div>
       </div>
 
-      <MobileNav onAIClick={() => setAiOpen(true)} />
-
-      <CopilotHelper open={aiOpen} setOpen={setAiOpen} />
+      <MobileNav />
     </>
   );
 };

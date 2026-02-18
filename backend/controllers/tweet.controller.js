@@ -1,5 +1,5 @@
-import { User } from "../models/userSchema.js";
-import { Tweet } from "../models/tweetSchema.js";
+import { User } from "../models/user.model.js";
+import { Tweet } from "../models/tweet.model.js";
 
 export const createTweet = async (req, res) => {
   try {

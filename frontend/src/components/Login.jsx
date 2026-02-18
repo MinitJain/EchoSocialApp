@@ -5,16 +5,19 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUser } from "../redux/userSlice.js";
+import useTheme from "../hooks/useTheme";
+import { RiMoonClearLine, RiSunLine } from "react-icons/ri";
 
 const Login = () => {
   const [isLogin, setIsLogin] = useState(false);
+  const { isDark, toggleTheme } = useTheme();
 
   const [formData, setFormData] = useState({
-    name: "", // const [name, setName] = useState("");
-    username: "", // const [username, setUsername] = useState("");
-    email: "", // const [email, setEmail] = useState("");
-    password: "", // const [password, setPassword] = useState("");
-    confirmPassword: "", // const [confirmPassword, setConfirmPassword] = useState("");
+    name: "",
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
 
   const navigate = useNavigate();
@@ -28,7 +31,7 @@ const Login = () => {
       email: "",
       password: "",
       confirmPassword: "",
-    }); // reset form when toggling
+    });
   };
 
   const handleChange = (e) => {
@@ -46,7 +49,6 @@ const Login = () => {
     }
 
     if (isLogin) {
-      //login
       try {
         const res = await axios.post(
           `${USER_API_END_POINT}/login`,
@@ -58,7 +60,7 @@ const Login = () => {
             headers: {
               "Content-Type": "application/json",
             },
-            withCredentials: true, // ✅ added this line for login too
+            withCredentials: true,
           },
         );
         console.log("Full Login Response:", res);
@@ -76,7 +78,6 @@ const Login = () => {
         console.log(error);
       }
     } else {
-      // sign up
       try {
         const res = await axios.post(
           `${USER_API_END_POINT}/register`,
@@ -96,7 +97,6 @@ const Login = () => {
         );
 
         if (res.data.success) {
-          // Automatically log in after signup
           dispatch(setUser(res?.data?.user));
           localStorage.setItem("user", JSON.stringify(res?.data?.user));
           navigate("/");
@@ -110,101 +110,151 @@ const Login = () => {
   };
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center bg-gray-100 ">
-      <div className="bg-gray-200 shadow-md  hover:shadow-xl active:shadow-2xl transition-shadow border border-gray-200/50 rounded-2xl p-12 flex flex-col items-center w-full max-w-md">
+    <div className="flex h-screen w-screen items-center justify-center bg-zinc-50 dark:bg-zinc-950 transition-colors">
+      <button
+        onClick={toggleTheme}
+        aria-label="Toggle theme"
+        className="fixed top-4 right-4 z-50 flex items-center justify-center rounded-lg p-2 text-zinc-600 transition-colors hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+      >
+        {isDark ? <RiMoonClearLine size={20} /> : <RiSunLine size={20} />}
+      </button>
+
+      <div className="w-full max-w-md rounded-2xl border border-zinc-200 bg-zinc-50/90 p-8 shadow-lg dark:border-zinc-800 dark:bg-zinc-950/90 transition-colors">
         <img
           src="/NodesLogoForEcho.png"
           alt="Logo"
-          className="w-24 mb-2 drop-shadow-sm"
+          className="mx-auto mb-4 h-10 w-10"
         />
-        <div className="text-center mb-6">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+        <div className="mb-6 text-center">
+          <h1 className="text-xl font-semibold text-zinc-900 dark:text-zinc-50">
             Welcome to Echo
           </h1>
+          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+            Sign in or create an account to continue.
+          </p>
         </div>
 
-        <h2 className="text-xl font-semibold mb-4 text-center">
+        <h2 className="mb-4 text-center text-sm font-medium text-zinc-700 dark:text-zinc-200">
           {isLogin ? "Login" : "Sign Up"}
         </h2>
 
-        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-5">
+        <form onSubmit={handleSubmit} className="flex w-full flex-col gap-4">
           {!isLogin && (
             <>
-              <input
-                type="text"
-                name="name"
-                placeholder="Name"
-                autoComplete="name"
-                required
-                onChange={handleChange}
-                value={formData.name}
-                className="border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent transition-all duration-200"
-              />
-              <input
-                type="text"
-                name="username"
-                placeholder="Username"
-                autoComplete="username"
-                required
-                onChange={handleChange}
-                value={formData.username}
-                className="border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent transition-all duration-200"
-              />
+              <div className="flex flex-col gap-1.5">
+                <label
+                  htmlFor="name"
+                  className="text-xs font-medium text-zinc-700 dark:text-zinc-300"
+                >
+                  Name
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Name"
+                  id="name"
+                  autoComplete="name"
+                  required
+                  onChange={handleChange}
+                  value={formData.name}
+                  className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-500 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder-zinc-500 transition-colors duration-150"
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label
+                  htmlFor="username"
+                  className="text-xs font-medium text-zinc-700 dark:text-zinc-300"
+                >
+                  Username
+                </label>
+                <input
+                  type="text"
+                  name="username"
+                  placeholder="Username"
+                  id="username"
+                  autoComplete="username"
+                  required
+                  onChange={handleChange}
+                  value={formData.username}
+                  className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-500 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder-zinc-500 transition-colors duration-150"
+                />
+              </div>
             </>
           )}
 
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            autoComplete="email"
-            required
-            onChange={handleChange}
-            value={formData.email}
-            className="border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent transition-all duration-200"
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            autoComplete="new-password"
-            required
-            onChange={handleChange}
-            value={formData.password}
-            className="border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent transition-all duration-200"
-          />
-
-          {!isLogin && (
+          <div className="flex flex-col gap-1.5">
+            <label
+              htmlFor="email"
+              className="text-xs font-medium text-zinc-700 dark:text-zinc-300"
+            >
+              Email
+            </label>
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              id="email"
+              autoComplete="email"
+              required
+              onChange={handleChange}
+              value={formData.email}
+              className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-500 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder-zinc-500 transition-colors duration-150"
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label
+              htmlFor="password"
+              className="text-xs font-medium text-zinc-700 dark:text-zinc-300"
+            >
+              Password
+            </label>
             <input
               type="password"
-              name="confirmPassword"
-              placeholder="Confirm Password"
+              name="password"
+              placeholder="Password"
+              id="password"
               autoComplete="new-password"
               required
               onChange={handleChange}
-              value={formData.confirmPassword}
-              className="border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-transparent transition-all duration-200"
+              value={formData.password}
+              className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-500 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder-zinc-500 transition-colors duration-150"
             />
+          </div>
+
+          {!isLogin && (
+            <div className="flex flex-col gap-1.5">
+              <label
+                htmlFor="confirmPassword"
+                className="text-xs font-medium text-zinc-700 dark:text-zinc-300"
+              >
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                name="confirmPassword"
+                id="confirmPassword"
+                placeholder="Confirm Password"
+                autoComplete="new-password"
+                required
+                onChange={handleChange}
+                value={formData.confirmPassword}
+                className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-500 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:placeholder-zinc-500 transition-colors duration-150"
+              />
+            </div>
           )}
 
           <button
             type="submit"
-            className="w-full py-3 font-semibold rounded-xl
-             bg-[#1D9BF0] text-white shadow-lg
-             hover:bg-[#1A8CD8] hover:shadow-xl hover:shadow-[#1D9BF0]/40
-             hover:scale-[1.02] hover:-translate-y-0.5
-             active:scale-[0.98] active:translate-y-0
-             transition-all duration-200 ease-out
-             border border-[#1D9BF0]/40 hover:border-[#1A8CD8]"
+            className="w-full rounded-xl border border-blue-600 bg-blue-600 py-2.5 text-sm font-semibold text-white shadow-sm transition-transform transition-colors duration-150 hover:bg-blue-500 hover:shadow-md active:scale-95"
           >
             {isLogin ? "Login" : "Sign Up"}
           </button>
         </form>
 
-        <p className="mt-6 text-sm text-gray-600 text-center">
+        <p className="mt-4 text-center text-xs text-zinc-500 dark:text-zinc-400">
           {isLogin ? "Don't have an account? " : "Already have an account? "}
           <span
-            className="text-slate-900 font-semibold hover:underline cursor-pointer transition-colors duration-200 hover:text-slate-700"
+            className="cursor-pointer font-medium text-zinc-900 dark:text-zinc-100 underline-offset-4 hover:underline"
             onClick={handleToggle}
           >
             {isLogin ? " Sign Up" : " Login"}

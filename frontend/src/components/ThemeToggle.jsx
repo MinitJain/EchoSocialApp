@@ -1,44 +1,16 @@
-import { useEffect, useState } from "react";
+import { RiMoonClearLine, RiSunLine } from "react-icons/ri";
+import useTheme from "../hooks/useTheme";
 
-const ThemeToggle = () => {
-  const getInitialTheme = () => {
-    const storedTheme = localStorage.getItem("theme");
-
-    if (storedTheme) return storedTheme;
-
-    // Follow system preference if no stored value
-    return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
-  };
-
-  const [theme, setTheme] = useState(getInitialTheme);
-
-  useEffect(() => {
-    const root = window.document.documentElement;
-
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-
-    localStorage.setItem("theme", theme);
-  }, [theme]);
+const ThemeToggle = ({ className = "" }) => {
+  const { isDark, toggleTheme } = useTheme();
 
   return (
     <button
-      onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="
-        px-3 py-2
-        rounded-lg
-        border border-gray-300 dark:border-gray-600
-        text-sm
-        transition-all duration-200
-        hover:scale-105
-      "
+      onClick={toggleTheme}
+      aria-label="Toggle theme"
+      className={`flex items-center justify-center rounded-lg p-2 text-zinc-600 transition-colors hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800 ${className}`}
     >
-      {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
+      {isDark ? <RiMoonClearLine size={20} /> : <RiSunLine size={20} />}
     </button>
   );
 };
