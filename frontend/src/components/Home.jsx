@@ -1,11 +1,8 @@
-import { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
-
 import LeftSidebar from "./LeftSidebar";
 import RightSideBar from "./RightSideBar";
 import MobileNav from "./MobileNav";
-
 import useOtherUsers from "../hooks/useOtherUsers";
 import useGetTweets from "../hooks/useGetTweets";
 import ScrollFade from "./ui/scrollFade";
