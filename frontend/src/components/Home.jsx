@@ -46,7 +46,7 @@ const Home = () => {
         isOpen={isAIChatOpen} 
         onClose={handleAIClose}
         isMinimized={isAIMinimized}
-        onOpen={() => setIsAIChatOpen(true)}
+        onOpen={handleAIOpen}
       />
     </>
   );

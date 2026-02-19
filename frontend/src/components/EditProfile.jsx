@@ -205,9 +205,10 @@ const EditProfile = ({ isOpen, onClose }) => {
               onChange={(e) =>
                 handleImageUrlChange("bannerUrl", e.target.value)
               }
-              placeholder="Banner image URL"
+              placeholder="Banner URL"
               className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
             />
+            <p className="mt-1 text-xs text-zinc-500">Recommended: Wide (3:1) aspect ratio (e.g., 1500x500).</p>
 
             {/* Profile URL */}
             <input
@@ -216,9 +217,10 @@ const EditProfile = ({ isOpen, onClose }) => {
               onChange={(e) =>
                 handleImageUrlChange("profileImageUrl", e.target.value)
               }
-              placeholder="Profile image URL"
+              placeholder="Profile URL"
               className="w-full rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-950 px-3 py-2 text-sm text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
             />
+            <p className="mt-1 text-xs text-zinc-500">Recommended: Square (1:1) aspect ratio.</p>
 
             {/* Name */}
             <input

@@ -3,9 +3,17 @@ import {
   RiUser3Line,
   RiBookmarkLine,
   RiRobotLine,
+  RiMoonClearLine,
+  RiSunLine,
+  RiLogoutBoxRLine,
 } from "react-icons/ri";
-import { useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { NavLink, useNavigate } from "react-router-dom";
+import useTheme from "../hooks/useTheme";
+import API from "../api/axios";
+import { USER_API_END_POINT } from "../utils/constant";
+import { setUser, getOtherUsers, getMyProfile } from "../redux/userSlice";
+import { toast } from "react-hot-toast";
 
 const SidebarItem = ({ to, icon: Icon, label, onClick }) => {
   if (to) {
@@ -49,9 +57,30 @@ const SidebarItem = ({ to, icon: Icon, label, onClick }) => {
 
 const LeftSidebar = ({ isAIChatOpen, setIsAIChatOpen }) => {
   const { user } = useSelector((store) => store.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isDark, toggleTheme } = useTheme();
 
   const toggleAIChat = () => {
     setIsAIChatOpen(!isAIChatOpen);
+  };
+
+  const logoutHandler = async () => {
+    try {
+      localStorage.clear();
+      dispatch(setUser(null));
+      dispatch(getOtherUsers(null));
+      dispatch(getMyProfile(null));
+
+      await API.get(`${USER_API_END_POINT}/logout`, {
+        withCredentials: true,
+      });
+
+      toast.success("Logged out");
+      navigate("/login", { replace: true });
+    } catch {
+      toast.error("Logout failed");
+    }
   };
 
   return (
@@ -68,7 +97,7 @@ const LeftSidebar = ({ isAIChatOpen, setIsAIChatOpen }) => {
         </div>
 
         {/* Navigation */}
-        <nav className="flex flex-col gap-1.5">
+        <nav className="flex flex-col space-y-1.5">
           <SidebarItem to="/" icon={RiHome5Line} label="Home" />
           {user && (
             <SidebarItem
@@ -84,23 +113,50 @@ const LeftSidebar = ({ isAIChatOpen, setIsAIChatOpen }) => {
           />
         </nav>
 
-        {/* Push to bottom */}
-        <div className="mt-auto pb-6 pt-6 flex flex-col gap-2">
+        <div className="flex flex-col space-y-1.5 mt-1.5">
+          {/* Echo AI Button */}
           <button
             onClick={toggleAIChat}
             className={`
-              flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm
-              transition-colors duration-150 ease-out
-              ${
-                isAIChatOpen
-                  ? "bg-indigo-500 text-white"
-                  : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-50"
-              }
-            `}
+            flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm
+            transition-colors duration-150 ease-out
+            ${
+              isAIChatOpen
+                ? "bg-indigo-500 text-white"
+                : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-50"
+            }
+          `}
             aria-label="Toggle Echo AI"
           >
             <RiRobotLine size={20} />
             <span className="font-medium tracking-tight">Echo AI</span>
+          </button>
+
+          {/* Theme Toggle */}
+          <button
+            onClick={toggleTheme}
+            className="flex items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-50 transition-colors duration-150 ease-out"
+          >
+            <div className="flex items-center gap-3">
+              {isDark ? <RiMoonClearLine size={20} /> : <RiSunLine size={20} />}
+              <span className="font-medium tracking-tight">Theme</span>
+            </div>
+            <div className="relative w-10 h-5 bg-zinc-300 dark:bg-zinc-700 rounded-full transition-colors duration-200">
+              <div
+                className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow-md transition-transform duration-200 ${
+                  isDark ? "translate-x-5" : "translate-x-0.5"
+                }`}
+              />
+            </div>
+          </button>
+
+          {/* Logout Button */}
+          <button
+            onClick={logoutHandler}
+            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-red-600 dark:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 transition-colors duration-150 ease-out"
+          >
+            <RiLogoutBoxRLine size={20} />
+            <span className="font-medium tracking-tight">Logout</span>
           </button>
         </div>
       </div>

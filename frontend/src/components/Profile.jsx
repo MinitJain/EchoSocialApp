@@ -169,28 +169,12 @@ const Profile = () => {
       {/* Action Button */}
       <div className="mt-16 flex items-center justify-end gap-2 px-4">
         {isOwnProfile ? (
-          <>
-            <button
-              onClick={toggleTheme}
-              className="hidden md:flex items-center justify-center rounded-full border border-zinc-300 dark:border-zinc-700 p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition"
-              aria-label="Toggle theme"
-            >
-              {isDark ? <RiSunLine size={18} /> : <RiMoonClearLine size={18} />}
-            </button>
-            <button
-              onClick={logoutHandler}
-              className="hidden md:flex items-center justify-center rounded-full border border-zinc-300 dark:border-zinc-700 p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition"
-              aria-label="Logout"
-            >
-              <RiLogoutBoxRLine size={18} />
-            </button>
-            <button
-              onClick={() => setIsEditProfileOpen(true)}
-              className="rounded-full border border-zinc-300 dark:border-zinc-700 px-4 py-1.5 text-sm font-medium text-zinc-900 dark:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition"
-            >
-              Edit Profile
-            </button>
-          </>
+          <button
+            onClick={() => setIsEditProfileOpen(true)}
+            className="rounded-full border border-zinc-300 dark:border-zinc-700 px-4 py-1.5 text-sm font-medium text-zinc-900 dark:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition"
+          >
+            Edit Profile
+          </button>
         ) : (
           <button
             onClick={followAndUnfollowHandler}

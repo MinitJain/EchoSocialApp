@@ -2,7 +2,6 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import cors from "cors";
-
 import userRoutes from "../routes/user.routes.js";
 import tweetRoutes from "../routes/tweet.routes.js";
 import aiRoutes from "../routes/ai.routes.js";
