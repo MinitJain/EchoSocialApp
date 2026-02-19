@@ -2,17 +2,10 @@ import {
   RiHome5Line,
   RiUser3Line,
   RiBookmarkLine,
-  RiLogoutBoxRLine,
-  RiMoonClearLine,
-  RiSunLine,
+  RiRobotLine,
 } from "react-icons/ri";
-import { useDispatch, useSelector } from "react-redux";
-import { NavLink, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { USER_API_END_POINT } from "../utils/constant";
-import toast from "react-hot-toast";
-import { getMyProfile, getOtherUsers, setUser } from "../redux/userSlice";
-import useTheme from "../hooks/useTheme";
+import { useSelector } from "react-redux";
+import { NavLink } from "react-router-dom";
 
 const SidebarItem = ({ to, icon: Icon, label, onClick }) => {
   if (to) {
@@ -37,7 +30,6 @@ const SidebarItem = ({ to, icon: Icon, label, onClick }) => {
     );
   }
 
-  // Button item
   return (
     <button
       onClick={onClick}
@@ -55,28 +47,11 @@ const SidebarItem = ({ to, icon: Icon, label, onClick }) => {
   );
 };
 
-const LeftSidebar = () => {
+const LeftSidebar = ({ isAIChatOpen, setIsAIChatOpen }) => {
   const { user } = useSelector((store) => store.user);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { isDark, toggleTheme } = useTheme();
 
-  const logoutHandler = async () => {
-    try {
-      localStorage.clear();
-      dispatch(setUser(null));
-      dispatch(getOtherUsers(null));
-      dispatch(getMyProfile(null));
-
-      await axios.get(`${USER_API_END_POINT}/logout`, {
-        withCredentials: true,
-      });
-
-      toast.success("Logged out");
-      navigate("/login", { replace: true });
-    } catch {
-      toast.error("Logout failed");
-    }
+  const toggleAIChat = () => {
+    setIsAIChatOpen(!isAIChatOpen);
   };
 
   return (
@@ -109,22 +84,23 @@ const LeftSidebar = () => {
           />
         </nav>
 
-        {/* Push logout to bottom */}
+        {/* Push to bottom */}
         <div className="mt-auto pb-6 pt-6 flex flex-col gap-2">
           <button
-            onClick={toggleTheme}
-            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-50 transition-colors duration-150"
-            aria-label="Toggle theme"
+            onClick={toggleAIChat}
+            className={`
+              flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm
+              transition-colors duration-150 ease-out
+              ${
+                isAIChatOpen
+                  ? "bg-indigo-500 text-white"
+                  : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-50"
+              }
+            `}
+            aria-label="Toggle Echo AI"
           >
-            {isDark ? <RiMoonClearLine size={20} /> : <RiSunLine size={20} />}
-            <span className="font-medium tracking-tight">Theme</span>
-          </button>
-          <button
-            onClick={logoutHandler}
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-red-500 hover:bg-red-500/10 transition"
-          >
-            <RiLogoutBoxRLine size={20} />
-            <span className="text-[15px] font-medium">Logout</span>
+            <RiRobotLine size={20} />
+            <span className="font-medium tracking-tight">Echo AI</span>
           </button>
         </div>
       </div>

@@ -5,11 +5,13 @@ import cors from "cors";
 
 import userRoutes from "../routes/user.routes.js";
 import tweetRoutes from "../routes/tweet.routes.js";
+import aiRoutes from "../routes/ai.routes.js";
 
 const app = express();
 
 const allowedOrigins = [
   "http://localhost:5173",
+  "http://localhost:5174",
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 
@@ -39,6 +41,7 @@ app.use(cors(corsOptions));
 
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/tweet", tweetRoutes);
+app.use("/api/v1/ai", aiRoutes);
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });

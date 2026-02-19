@@ -1,27 +1,57 @@
 import Avatar from "react-avatar";
 import { IoMdArrowBack } from "react-icons/io";
-import { Link, useParams } from "react-router-dom";
+import {
+  RiSettings3Line,
+  RiMoonClearLine,
+  RiSunLine,
+  RiLogoutBoxRLine,
+} from "react-icons/ri";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import useGetProfile from "../hooks/useGetProfile";
 import useGetTweets from "../hooks/useGetTweets";
+import useTheme from "../hooks/useTheme";
 import API from "../api/axios";
-import { followingUpdate } from "../redux/userSlice";
+import { USER_API_END_POINT } from "../utils/constant";
+import { setUser, getOtherUsers, getMyProfile, followingUpdate } from "../redux/userSlice";
 import { getRefresh } from "../redux/tweetSlice";
+import { toast } from "react-hot-toast";
 import EditProfile from "./EditProfile";
 import Tweet from "./Tweet";
 
 const Profile = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { user, profile } = useSelector((store) => store.user);
   const { tweets } = useSelector((store) => store.tweet);
+  const { isDark, toggleTheme } = useTheme();
 
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   useGetProfile(id);
   useGetTweets(id);
+
+  const logoutHandler = async () => {
+    try {
+      localStorage.clear();
+      dispatch(setUser(null));
+      dispatch(getOtherUsers(null));
+      dispatch(getMyProfile(null));
+
+      await API.get(`${USER_API_END_POINT}/logout`, {
+        withCredentials: true,
+      });
+
+      toast.success("Logged out");
+      navigate("/login", { replace: true });
+    } catch {
+      toast.error("Logout failed");
+    }
+  };
 
   if (!profile) {
     return (
@@ -58,17 +88,50 @@ const Profile = () => {
   return (
     <div className="w-full">
       {/* Header */}
-      <div className="flex items-center gap-3 px-4 py-3">
-        <Link
-          to="/"
-          className="rounded-full p-2 text-zinc-500 transition-colors hover:bg-zinc-200 dark:hover:bg-zinc-900/60 hover:text-zinc-900 dark:hover:text-zinc-100"
-        >
-          <IoMdArrowBack size={22} />
-        </Link>
+      <div className="flex items-center justify-between px-4 py-3">
+        <div className="flex items-center gap-3">
+          <Link
+            to="/"
+            className="rounded-full p-2 text-zinc-500 transition-colors hover:bg-zinc-200 dark:hover:bg-zinc-900/60 hover:text-zinc-900 dark:hover:text-zinc-100"
+          >
+            <IoMdArrowBack size={22} />
+          </Link>
 
-        <h1 className="text-base font-semibold text-zinc-900 dark:text-zinc-50">
-          {profile.name}
-        </h1>
+          <h1 className="text-base font-semibold text-zinc-900 dark:text-zinc-50">
+            {profile.name}
+          </h1>
+        </div>
+
+        {/* Mobile Settings */}
+        {isOwnProfile && (
+          <div className="relative md:hidden">
+            <button
+              onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+              className="rounded-full p-2 text-zinc-500 transition-colors hover:bg-zinc-200 dark:hover:bg-zinc-900/60 hover:text-zinc-900 dark:hover:text-zinc-100"
+            >
+              <RiSettings3Line size={22} />
+            </button>
+
+            {isSettingsOpen && (
+              <div className="absolute right-4 top-12 w-48 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 py-2 shadow-lg z-50">
+                <button
+                  onClick={toggleTheme}
+                  className="flex w-full items-center gap-3 px-4 py-2 text-sm text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-900"
+                >
+                  {isDark ? <RiSunLine size={18} /> : <RiMoonClearLine size={18} />}
+                  {isDark ? "Light Mode" : "Dark Mode"}
+                </button>
+                <button
+                  onClick={logoutHandler}
+                  className="flex w-full items-center gap-3 px-4 py-2 text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10"
+                >
+                  <RiLogoutBoxRLine size={18} />
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Banner */}
@@ -104,14 +167,30 @@ const Profile = () => {
       </div>
 
       {/* Action Button */}
-      <div className="mt-16 flex justify-end px-4">
+      <div className="mt-16 flex items-center justify-end gap-2 px-4">
         {isOwnProfile ? (
-          <button
-            onClick={() => setIsEditProfileOpen(true)}
-            className="rounded-full border border-zinc-300 dark:border-zinc-700 px-4 py-1.5 text-sm font-medium text-zinc-900 dark:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition"
-          >
-            Edit Profile
-          </button>
+          <>
+            <button
+              onClick={toggleTheme}
+              className="hidden md:flex items-center justify-center rounded-full border border-zinc-300 dark:border-zinc-700 p-2 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition"
+              aria-label="Toggle theme"
+            >
+              {isDark ? <RiSunLine size={18} /> : <RiMoonClearLine size={18} />}
+            </button>
+            <button
+              onClick={logoutHandler}
+              className="hidden md:flex items-center justify-center rounded-full border border-zinc-300 dark:border-zinc-700 p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition"
+              aria-label="Logout"
+            >
+              <RiLogoutBoxRLine size={18} />
+            </button>
+            <button
+              onClick={() => setIsEditProfileOpen(true)}
+              className="rounded-full border border-zinc-300 dark:border-zinc-700 px-4 py-1.5 text-sm font-medium text-zinc-900 dark:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-zinc-900 transition"
+            >
+              Edit Profile
+            </button>
+          </>
         ) : (
           <button
             onClick={followAndUnfollowHandler}

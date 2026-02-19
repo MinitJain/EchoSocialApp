@@ -172,7 +172,7 @@ export const getTweetById = async (req, res) => {
 
     const tweet = await Tweet.findById(id).populate(
       "userId",
-      "name username profileImageUrl bannerUrl bio"
+      "name username profileImageUrl bannerUrl bio",
     );
 
     if (!tweet) {
