@@ -5,8 +5,6 @@
 [![Node.js](https://img.shields.io/badge/Node.js-22%2B-339933?logo=node.js&style=flat-square)](https://nodejs.org)
 [![React](https://img.shields.io/badge/React-18%2B-61DAFB?logo=react&style=flat-square)](https://react.dev)
 [![Gemini 3 Flash](https://img.shields.io/badge/Gemini%203%20Flash-2026-4285F4?logo=google&style=flat-square)](https://deepmind.google/technologies/gemini)
-[![License](https://img.shields.io/badge/License-MIT-yellowgreen?style=flat-square)](https://opensource.org/licenses/MIT)
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen?style=flat-square)](#)
 
 </div>
 
