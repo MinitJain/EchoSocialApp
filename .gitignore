@@ -37,5 +37,5 @@ Thumbs.db
 logs
 *.log.env.production
 
-CHANGLELOG.md
+CHANGELOG.md
 AGENTS.md
