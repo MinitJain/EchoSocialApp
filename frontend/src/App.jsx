@@ -6,6 +6,7 @@ import API from "./api/axios";
 import Body from "./components/Body";
 import Login from "./components/Login";
 import { Toaster } from "react-hot-toast";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 function App() {
   const dispatch = useDispatch();
@@ -63,6 +64,7 @@ function App() {
             "rounded-lg bg-zinc-900 text-zinc-50 border border-zinc-800 shadow-sm",
         }}
       />
+      <SpeedInsights />
     </div>
   );
 }
