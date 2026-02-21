@@ -53,8 +53,8 @@ export const Register = async (req, res) => {
       .status(201)
       .cookie("token", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        secure: true,
+        sameSite: 'none',
         maxAge: 24 * 60 * 60 * 1000,
       })
       .json({
@@ -119,9 +119,9 @@ export const Login = async (req, res) => {
       .status(200)
       .cookie("token", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // true for HTTPS in production
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // none for cross-origin, lax for local
-        maxAge: 24 * 60 * 60 * 1000, // 1 day
+        secure: true,
+        sameSite: 'none',
+        maxAge: 24 * 60 * 60 * 1000,
       })
       .json({
         message: `Welcome back! ${user.name}`,
@@ -142,9 +142,9 @@ export const logout = async (req, res) => {
   return res
     .cookie("token", "", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      expires: new Date(0), // Expire it immediately
+      secure: true,
+      sameSite: 'none',
+      expires: new Date(0),
     })
     .status(200)
     .json({
